@@ -80,27 +80,7 @@ const Login = () => {
     }
   };
 
-  const handleDemoLogin = async (role = 'user') => {
-    const demoCredentials = {
-      user: { email: 'demo@example.com', password: 'demo123' },
-      admin: { email: 'admin@example.com', password: 'admin123' }
-    };
 
-    const credentials = demoCredentials[role];
-    setFormData(credentials);
-
-    try {
-      const result = await login(credentials.email, credentials.password);
-      if (result.success) {
-        toast.success(`Demo ${role} login successful!`);
-        navigate(role === 'admin' ? '/admin' : '/', { replace: true });
-      } else {
-        toast.error(result.message || 'Demo login failed');
-      }
-    } catch (error) {
-      toast.error(error.message || 'Demo login failed');
-    }
-  };
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
@@ -223,32 +203,7 @@ const Login = () => {
             </div>
           </form>
 
-          {/* Demo Login Buttons */}
-          <div className="mt-6">
-            <div className="relative">
-              <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-gray-300" />
-              </div>
-              <div className="relative flex justify-center text-sm">
-                <span className="px-2 bg-white text-gray-500">Or try demo accounts</span>
-              </div>
-            </div>
 
-            <div className="mt-6 grid grid-cols-2 gap-3">
-              <button
-                onClick={() => handleDemoLogin('user')}
-                className="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
-              >
-                Demo User
-              </button>
-              <button
-                onClick={() => handleDemoLogin('admin')}
-                className="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
-              >
-                Demo Admin
-              </button>
-            </div>
-          </div>
         </motion.div>
       </div>
     </div>
