@@ -9,7 +9,8 @@
     "build": "vite build",
     "build:analyze": "vite build --mode analyze",
     "preview": "vite preview",
-    "optimize": "npm run build && npm run preview"
+    "optimize": "npm run build && npm run preview",
+    "vercel-build": "vite build"
   },
   "devDependencies": {
     "@tailwindcss/aspect-ratio": "^0.4.2",
