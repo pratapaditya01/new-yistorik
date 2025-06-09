@@ -27,8 +27,8 @@ app.use(cors({
     'https://localhost:5174',
     process.env.FRONTEND_URL,
     // Add your deployed frontend URL here
-    'https://your-frontend-domain.vercel.app',
-    'https://your-frontend-domain.netlify.app'
+    'new-yistorik.vercel.app',
+    'new-yistorik-git-main-pratapaditya01s-projects.vercel.app'
   ].filter(Boolean),
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
