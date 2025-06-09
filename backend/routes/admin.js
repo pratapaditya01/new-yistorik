@@ -120,26 +120,79 @@ router.post('/products', async (req, res) => {
   try {
     const productData = { ...req.body };
 
-    // Generate slug if not provided
+    // Validate required fields
+    if (!productData.name || productData.name.trim().length === 0) {
+      return res.status(400).json({
+        message: 'Product name is required and cannot be empty'
+      });
+    }
+
+    if (!productData.description || productData.description.trim().length === 0) {
+      return res.status(400).json({
+        message: 'Product description is required and cannot be empty'
+      });
+    }
+
+    if (!productData.category) {
+      return res.status(400).json({
+        message: 'Product category is required'
+      });
+    }
+
+    // Generate slug if not provided (will also be handled by pre-save hook)
     if (!productData.slug && productData.name) {
       productData.slug = productData.name
         .toLowerCase()
-        .replace(/[^a-zA-Z0-9]/g, '-')
+        .trim()
+        .replace(/[^a-zA-Z0-9\s]/g, '')
+        .replace(/\s+/g, '-')
         .replace(/-+/g, '-')
         .replace(/^-|-$/g, '');
+
+      if (!productData.slug) {
+        productData.slug = `product-${Date.now()}`;
+      }
     }
 
-    // Images are now handled separately through the upload API
-    // They come as an array of image objects with url and publicId
+    // Ensure price is a number
+    if (productData.price) {
+      productData.price = parseFloat(productData.price);
+    }
+
+    // Ensure quantity is a number
+    if (productData.quantity) {
+      productData.quantity = parseInt(productData.quantity);
+    }
 
     console.log('Creating product with data:', productData);
 
     const product = new Product(productData);
     const savedProduct = await product.save();
 
+    // Populate category for response
+    await savedProduct.populate('category', 'name slug');
+
     res.status(201).json(savedProduct);
   } catch (error) {
     console.error('Product creation error:', error);
+
+    // Handle validation errors
+    if (error.name === 'ValidationError') {
+      const validationErrors = Object.values(error.errors).map(err => err.message);
+      return res.status(400).json({
+        message: 'Validation failed',
+        errors: validationErrors
+      });
+    }
+
+    // Handle duplicate key errors
+    if (error.code === 11000) {
+      const field = Object.keys(error.keyPattern)[0];
+      return res.status(400).json({
+        message: `${field} already exists. Please use a different value.`
+      });
+    }
+
     res.status(500).json({
       message: 'Server error creating product',
       error: error.message

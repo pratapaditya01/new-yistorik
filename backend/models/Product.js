@@ -34,7 +34,6 @@ const productSchema = new mongoose.Schema({
   },
   slug: {
     type: String,
-    required: true,
     unique: true,
     lowercase: true
   },
@@ -160,12 +159,27 @@ const productSchema = new mongoose.Schema({
 
 // Create slug from name before saving
 productSchema.pre('save', function(next) {
-  if (this.isModified('name')) {
-    this.slug = this.name
-      .toLowerCase()
-      .replace(/[^a-zA-Z0-9]/g, '-')
-      .replace(/-+/g, '-')
-      .replace(/^-|-$/g, '');
+  // Always ensure we have a slug
+  if (!this.slug || this.isModified('name')) {
+    if (this.name && this.name.trim().length > 0) {
+      let slug = this.name
+        .toLowerCase()
+        .trim()
+        .replace(/[^a-zA-Z0-9\s]/g, '') // Remove special characters but keep spaces
+        .replace(/\s+/g, '-') // Replace spaces with hyphens
+        .replace(/-+/g, '-') // Replace multiple hyphens with single hyphen
+        .replace(/^-|-$/g, ''); // Remove leading/trailing hyphens
+
+      // Ensure slug is not empty
+      if (!slug || slug.length === 0) {
+        slug = `product-${Date.now()}`;
+      }
+
+      this.slug = slug;
+    } else {
+      // Generate a default slug if no name or empty name
+      this.slug = `product-${Date.now()}`;
+    }
   }
   next();
 });
