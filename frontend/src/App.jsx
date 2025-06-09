@@ -1,38 +1,46 @@
-import React from 'react';
+import React, { Suspense, lazy } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import { AuthProvider } from './context/AuthContext';
 import { CartProvider } from './context/CartContext';
+import LoadingSpinner from './components/ui/LoadingSpinner';
 
-// Layout Components
+// Layout Components (Keep these as regular imports for better UX)
 import Navbar from './components/layout/Navbar';
 import Footer from './components/layout/Footer';
 
-// Pages
+// Core Pages (Keep these as regular imports)
 import Home from './pages/Home';
 import Products from './pages/Products';
 import ProductDetail from './pages/ProductDetail';
-import Cart from './pages/Cart';
-import Checkout from './pages/Checkout';
-import Login from './pages/auth/Login';
-import Register from './pages/auth/Register';
-import Profile from './pages/auth/Profile';
 
-// Other Pages
-import Orders from './pages/Orders';
-import Wishlist from './pages/Wishlist';
+// Lazy load less critical pages for better initial load performance
+const Cart = lazy(() => import('./pages/Cart'));
+const Checkout = lazy(() => import('./pages/Checkout'));
+const Login = lazy(() => import('./pages/auth/Login'));
+const Register = lazy(() => import('./pages/auth/Register'));
+const Profile = lazy(() => import('./pages/auth/Profile'));
+const Orders = lazy(() => import('./pages/Orders'));
+const Wishlist = lazy(() => import('./pages/Wishlist'));
 
-// Admin Pages
-import AdminDashboard from './pages/admin/Dashboard';
-import AdminProducts from './pages/admin/Products';
-import AdminOrders from './pages/admin/Orders';
-import AdminDeliveries from './pages/admin/Deliveries';
-import AdminUsers from './pages/admin/Users';
-import AdminCategories from './pages/admin/Categories';
+// Lazy load admin pages (only loaded when needed)
+const AdminDashboard = lazy(() => import('./pages/admin/Dashboard'));
+const AdminProducts = lazy(() => import('./pages/admin/Products'));
+const AdminOrders = lazy(() => import('./pages/admin/Orders'));
+const AdminDeliveries = lazy(() => import('./pages/admin/Deliveries'));
+const AdminUsers = lazy(() => import('./pages/admin/Users'));
+const AdminCategories = lazy(() => import('./pages/admin/Categories'));
 
-// Protected Route Component
+// Protected Route Components
 import ProtectedRoute from './components/auth/ProtectedRoute';
 import AdminRoute from './components/auth/AdminRoute';
+
+// Loading fallback component
+const PageLoader = () => (
+  <div className="min-h-screen flex items-center justify-center">
+    <LoadingSpinner size="lg" />
+  </div>
+);
 
 function App() {
   return (
@@ -41,9 +49,10 @@ function App() {
         <Router>
           <div className="min-h-screen bg-gray-50 flex flex-col">
             <Navbar />
-            
+
             <main className="flex-1">
-              <Routes>
+              <Suspense fallback={<PageLoader />}>
+                <Routes>
                 {/* Public Routes */}
                 <Route path="/" element={<Home />} />
                 <Route path="/products" element={<Products />} />
@@ -104,8 +113,9 @@ function App() {
                   </AdminRoute>
                 } />
               </Routes>
+              </Suspense>
             </main>
-            
+
             <Footer />
           </div>
 

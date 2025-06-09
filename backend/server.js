@@ -3,20 +3,35 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
+const compression = require('compression');
 const path = require('path');
 require('dotenv').config({ path: path.join(__dirname, '.env') });
 
 const app = express();
 
-// Security middleware
-app.use(helmet());
+// Enable compression for all responses
+app.use(compression());
 
-// Rate limiting
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100 // limit each IP to 100 requests per windowMs
+// Security middleware
+app.use(helmet({
+  crossOriginResourcePolicy: { policy: "cross-origin" }
+}));
+
+// Rate limiting with different limits for different endpoints
+const createRateLimit = (windowMs, max, message) => rateLimit({
+  windowMs,
+  max,
+  message: { error: message },
+  standardHeaders: true,
+  legacyHeaders: false,
 });
-app.use(limiter);
+
+// General rate limiting
+app.use('/api/', createRateLimit(15 * 60 * 1000, 100, 'Too many requests'));
+
+// Stricter rate limiting for auth endpoints
+app.use('/api/auth/login', createRateLimit(15 * 60 * 1000, 5, 'Too many login attempts'));
+app.use('/api/auth/register', createRateLimit(60 * 60 * 1000, 3, 'Too many registration attempts'));
 
 // CORS configuration
 app.use(cors({
@@ -85,17 +100,21 @@ app.use('*', (req, res) => {
   res.status(404).json({ message: 'Route not found' });
 });
 
-// Database connection (Optional - will work without MongoDB for development)
+// Database connection with optimized settings
 const connectDB = async () => {
   try {
-    // Connection options that work with MongoDB Atlas
+    // Optimized connection options for production
     const options = {
-      serverSelectionTimeoutMS: 10000, // 10 seconds
+      serverSelectionTimeoutMS: 5000, // 5 seconds
       connectTimeoutMS: 10000,
-      socketTimeoutMS: 10000,
-      maxPoolSize: 10,
+      socketTimeoutMS: 45000,
+      maxPoolSize: 20, // Increased pool size
+      minPoolSize: 5, // Minimum connections
+      maxIdleTimeMS: 30000,
       retryWrites: true,
-      w: 'majority'
+      w: 'majority',
+      bufferCommands: false, // Disable mongoose buffering
+      bufferMaxEntries: 0 // Disable mongoose buffering
     };
 
     console.log('🔄 Connecting to MongoDB Atlas...');

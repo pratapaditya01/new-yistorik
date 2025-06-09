@@ -4,13 +4,13 @@ const { protect, admin, optionalAuth } = require('../middleware/auth');
 
 const router = express.Router();
 
-// @desc    Get all products with filtering, sorting, and pagination
+// @desc    Get all products with filtering, sorting, and pagination (Optimized)
 // @route   GET /api/products
 // @access  Public
 router.get('/', async (req, res) => {
   try {
-    const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 12;
+    const page = Math.max(1, parseInt(req.query.page) || 1);
+    const limit = Math.min(50, Math.max(1, parseInt(req.query.limit) || 12)); // Limit max results
     const skip = (page - 1) * limit;
 
     // Build query
@@ -89,16 +89,21 @@ router.get('/', async (req, res) => {
         sort.createdAt = -1;
     }
 
-    // Execute query
-    const products = await Product.find(query)
-      .populate('category', 'name slug')
-      .populate('subcategory', 'name slug')
-      .sort(sort)
-      .skip(skip)
-      .limit(limit)
-      .select('-reviews'); // Exclude reviews for list view
+    // Execute queries in parallel for better performance
+    const [products, total] = await Promise.all([
+      Product.find(query)
+        .populate('category', 'name slug')
+        .populate('subcategory', 'name slug')
+        .sort(sort)
+        .skip(skip)
+        .limit(limit)
+        .select('-reviews -description') // Exclude heavy fields for list view
+        .lean(), // Use lean() for better performance
+      Product.countDocuments(query)
+    ]);
 
-    const total = await Product.countDocuments(query);
+    // Set cache headers for better performance
+    res.set('Cache-Control', 'public, max-age=300'); // 5 minutes cache
 
     res.json({
       products,

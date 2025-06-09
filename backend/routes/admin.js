@@ -11,28 +11,55 @@ const router = express.Router();
 // Apply admin middleware to all routes
 router.use(protect, admin);
 
-// Dashboard stats
+// Dashboard stats - Optimized with parallel queries
 router.get('/dashboard', async (req, res) => {
   try {
-    const totalProducts = await Product.countDocuments();
-    const totalOrders = await Order.countDocuments();
-    const totalUsers = await User.countDocuments();
-    const totalRevenue = await Order.aggregate([
-      { $match: { isPaid: true } },
-      { $group: { _id: null, total: { $sum: '$totalPrice' } } }
+    // Execute all queries in parallel for better performance
+    const [
+      totalProducts,
+      totalOrders,
+      totalUsers,
+      totalRevenue,
+      recentOrders,
+      lowStockProducts,
+      orderStats
+    ] = await Promise.all([
+      Product.countDocuments({ isActive: true }),
+      Order.countDocuments(),
+      User.countDocuments({ isActive: true }),
+      Order.aggregate([
+        { $match: { isPaid: true } },
+        { $group: { _id: null, total: { $sum: '$totalPrice' } } }
+      ]),
+      Order.find()
+        .populate('user', 'name email')
+        .sort({ createdAt: -1 })
+        .limit(5)
+        .lean(), // Use lean() for better performance
+      Product.find({
+        trackQuantity: true,
+        $expr: { $lte: ['$quantity', '$lowStockThreshold'] }
+      })
+        .select('name quantity lowStockThreshold')
+        .limit(10)
+        .lean(),
+      // Get order statistics for the last 30 days
+      Order.aggregate([
+        {
+          $match: {
+            createdAt: { $gte: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000) }
+          }
+        },
+        {
+          $group: {
+            _id: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } },
+            count: { $sum: 1 },
+            revenue: { $sum: { $cond: [{ $eq: ["$isPaid", true] }, "$totalPrice", 0] } }
+          }
+        },
+        { $sort: { _id: 1 } }
+      ])
     ]);
-
-    // Recent orders
-    const recentOrders = await Order.find()
-      .populate('user', 'name email')
-      .sort({ createdAt: -1 })
-      .limit(5);
-
-    // Low stock products
-    const lowStockProducts = await Product.find({
-      trackQuantity: true,
-      $expr: { $lte: ['$quantity', '$lowStockThreshold'] }
-    }).limit(10);
 
     res.json({
       stats: {
