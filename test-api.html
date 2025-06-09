@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>API Test</title>
+</head>
+<body>
+    <h1>API Test</h1>
+    <button onclick="testAPI()">Test Orders API</button>
+    <div id="result"></div>
+
+    <script>
+        async function testAPI() {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = 'Testing...';
+            
+            try {
+                const response = await fetch('http://localhost:5001/api/orders', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        orderItems: [{
+                            product: '675b7ecadbd1ed4dfe34d85',
+                            name: 'Test Product',
+                            image: '/placeholder.jpg',
+                            price: 29.99,
+                            quantity: 1
+                        }],
+                        shippingAddress: {
+                            fullName: 'John Doe',
+                            address: '123 Test St',
+                            city: 'Test City',
+                            state: 'TS',
+                            zipCode: '12345',
+                            country: 'United States',
+                            phone: '+1-555-0123'
+                        },
+                        paymentMethod: 'credit_card',
+                        itemsPrice: 29.99,
+                        taxPrice: 2.40,
+                        shippingPrice: 10.00,
+                        totalPrice: 42.39,
+                        isGuestOrder: true,
+                        guestInfo: {
+                            email: 'test@example.com',
+                            firstName: 'John',
+                            lastName: 'Doe',
+                            phone: '+1-555-0123'
+                        }
+                    })
+                });
+                
+                const data = await response.json();
+                resultDiv.innerHTML = `
+                    <h3>Response:</h3>
+                    <p>Status: ${response.status}</p>
+                    <pre>${JSON.stringify(data, null, 2)}</pre>
+                `;
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <h3>Error:</h3>
+                    <p>${error.message}</p>
+                `;
+            }
+        }
+    </script>
+</body>
+</html>
