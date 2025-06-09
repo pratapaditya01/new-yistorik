@@ -23,7 +23,12 @@ app.use(cors({
   origin: [
     'http://localhost:5173',
     'http://localhost:5174',
-    process.env.FRONTEND_URL
+    'https://localhost:5173',
+    'https://localhost:5174',
+    process.env.FRONTEND_URL,
+    // Add your deployed frontend URL here
+    'https://your-frontend-domain.vercel.app',
+    'https://your-frontend-domain.netlify.app'
   ].filter(Boolean),
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
