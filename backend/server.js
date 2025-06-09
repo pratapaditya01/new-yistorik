@@ -12,9 +12,11 @@ const app = express();
 // Enable compression for all responses
 app.use(compression());
 
-// Security middleware
+// Security middleware with CORS-friendly settings
 app.use(helmet({
-  crossOriginResourcePolicy: { policy: "cross-origin" }
+  crossOriginResourcePolicy: { policy: "cross-origin" },
+  crossOriginOpenerPolicy: { policy: "same-origin-allow-popups" },
+  crossOriginEmbedderPolicy: false // Disable to allow cross-origin requests
 }));
 
 // Rate limiting with different limits for different endpoints
@@ -33,7 +35,43 @@ app.use('/api/', createRateLimit(15 * 60 * 1000, 100, 'Too many requests'));
 app.use('/api/auth/login', createRateLimit(15 * 60 * 1000, 5, 'Too many login attempts'));
 app.use('/api/auth/register', createRateLimit(60 * 60 * 1000, 3, 'Too many registration attempts'));
 
-// CORS configuration
+// Explicit CORS headers middleware (backup)
+app.use((req, res, next) => {
+  const allowedOrigins = [
+    'http://localhost:5173',
+    'http://localhost:5174',
+    'https://localhost:5173',
+    'https://localhost:5174',
+    'https://yistorik.in',
+    'https://www.yistorik.in',
+    'http://yistorik.in',
+    'http://www.yistorik.in',
+    'https://new-yistorik.vercel.app',
+    'https://new-yistorik-git-main-pratapaditya01s-projects.vercel.app',
+    'https://new-yistorik-delta.vercel.app',
+    process.env.FRONTEND_URL
+  ].filter(Boolean);
+
+  const origin = req.headers.origin;
+  if (allowedOrigins.includes(origin)) {
+    res.setHeader('Access-Control-Allow-Origin', origin);
+  }
+
+  res.setHeader('Access-Control-Allow-Credentials', 'true');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
+  res.setHeader('Access-Control-Expose-Headers', 'Content-Length, Content-Type');
+
+  // Handle preflight requests
+  if (req.method === 'OPTIONS') {
+    res.status(200).end();
+    return;
+  }
+
+  next();
+});
+
+// CORS configuration (primary)
 app.use(cors({
   origin: [
     'http://localhost:5173',
