@@ -44,10 +44,13 @@ export default defineConfig({
   server: {
     // Enable HMR
     hmr: true,
-    
+
     // Port configuration
     port: 5173,
-    
+
+    // Handle client-side routing in development
+    historyApiFallback: true,
+
     // Proxy API requests during development
     proxy: {
       '/api': {
