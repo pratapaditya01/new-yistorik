@@ -1,6 +1,26 @@
 // Optimized Image utility functions with caching and lazy loading support
 
-const API_BASE_URL = 'https://new-yistorik.onrender.com';
+// Dynamic API URL configuration for images
+const getApiBaseUrl = () => {
+  // Check if we're in development
+  if (typeof window !== 'undefined') {
+    const currentDomain = window.location.hostname;
+
+    if (currentDomain === 'localhost' || currentDomain === '127.0.0.1') {
+      return 'http://localhost:5001';
+    }
+
+    if (currentDomain === 'yistorik.in' || currentDomain === 'www.yistorik.in') {
+      // Production domain - use your backend URL
+      return 'https://new-yistorik.onrender.com';
+    }
+  }
+
+  // Fallback for SSR or Vercel deployments
+  return 'https://new-yistorik.onrender.com';
+};
+
+const API_BASE_URL = getApiBaseUrl();
 
 // Cache for processed image URLs
 const imageUrlCache = new Map();

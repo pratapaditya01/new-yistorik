@@ -41,7 +41,12 @@ app.use(cors({
     'https://localhost:5173',
     'https://localhost:5174',
     process.env.FRONTEND_URL,
-    // Add your deployed frontend URLs here
+    // Production domains
+    'https://yistorik.in',
+    'https://www.yistorik.in',
+    'http://yistorik.in',
+    'http://www.yistorik.in',
+    // Vercel deployment URLs (backup)
     'https://new-yistorik.vercel.app',
     'https://new-yistorik-git-main-pratapaditya01s-projects.vercel.app',
     'https://new-yistorik-delta.vercel.app'

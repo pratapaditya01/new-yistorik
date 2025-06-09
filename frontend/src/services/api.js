@@ -1,8 +1,28 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'https://new-yistorik.onrender.com/api';
+// Dynamic API URL configuration
+const getApiBaseUrl = () => {
+  // Check if we're in development
+  if (import.meta.env.DEV) {
+    return 'http://localhost:5001/api';
+  }
+
+  // Check current domain
+  const currentDomain = window.location.hostname;
+
+  if (currentDomain === 'yistorik.in' || currentDomain === 'www.yistorik.in') {
+    // Production domain - use your backend URL
+    return 'https://new-yistorik.onrender.com/api';
+  }
+
+  // Fallback for Vercel deployments
+  return 'https://new-yistorik.onrender.com/api';
+};
+
+const API_BASE_URL = getApiBaseUrl();
 
 console.log('API Base URL:', API_BASE_URL);
+console.log('Current domain:', window.location.hostname);
 
 // Request cache for deduplication
 const requestCache = new Map();
