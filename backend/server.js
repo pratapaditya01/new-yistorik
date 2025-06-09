@@ -100,21 +100,17 @@ app.use('*', (req, res) => {
   res.status(404).json({ message: 'Route not found' });
 });
 
-// Database connection with optimized settings
+// Database connection (Optional - will work without MongoDB for development)
 const connectDB = async () => {
   try {
-    // Optimized connection options for production
+    // Connection options that work with MongoDB Atlas
     const options = {
-      serverSelectionTimeoutMS: 5000, // 5 seconds
+      serverSelectionTimeoutMS: 10000, // 10 seconds
       connectTimeoutMS: 10000,
-      socketTimeoutMS: 45000,
-      maxPoolSize: 20, // Increased pool size
-      minPoolSize: 5, // Minimum connections
-      maxIdleTimeMS: 30000,
+      socketTimeoutMS: 10000,
+      maxPoolSize: 10,
       retryWrites: true,
-      w: 'majority',
-      bufferCommands: false, // Disable mongoose buffering
-      bufferMaxEntries: 0 // Disable mongoose buffering
+      w: 'majority'
     };
 
     console.log('🔄 Connecting to MongoDB Atlas...');
