@@ -5,6 +5,7 @@ import { adminService } from '../../services/adminService';
 import ImageUpload from '../../components/admin/ImageUpload';
 import { getMainImageUrl } from '../../utils/imageUtils';
 import { formatPrice } from '../../utils/currency';
+import { getGSTSuggestion, validateGSTRate, calculateGST, formatGSTCalculation, getCommonGSTRates } from '../../utils/gstHelper';
 import {
   PlusIcon,
   PencilIcon,
@@ -353,6 +354,10 @@ const ProductModal = ({ type, product, categories, onClose, onSave }) => {
     taxable: true,
   });
   const [loading, setLoading] = useState(false);
+  const [gstError, setGstError] = useState('');
+
+  // Get common GST rates for quick buttons
+  const commonGSTRates = getCommonGSTRates();
 
   useEffect(() => {
     if (product && (type === 'edit' || type === 'view')) {
@@ -380,6 +385,23 @@ const ProductModal = ({ type, product, categories, onClose, onSave }) => {
 
   const handleInputChange = (e) => {
     const { name, value, type: inputType, checked } = e.target;
+
+    // Special handling for GST rate validation
+    if (name === 'gstRate') {
+      setGstError(''); // Clear previous error
+
+      if (value !== '') {
+        const validation = validateGSTRate(value);
+        if (!validation.valid) {
+          setGstError(validation.error);
+          return;
+        }
+        if (validation.warning) {
+          setGstError(`Note: ${validation.warning}`);
+        }
+      }
+    }
+
     setFormData(prev => ({
       ...prev,
       [name]: inputType === 'checkbox' ? checked : value,
@@ -594,19 +616,90 @@ const ProductModal = ({ type, product, categories, onClose, onSave }) => {
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   GST Rate (%)
                 </label>
-                <select
-                  name="gstRate"
-                  value={formData.gstRate}
-                  onChange={handleInputChange}
-                  disabled={isReadOnly}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary-500 focus:border-transparent disabled:bg-gray-100"
-                >
-                  <option value="0">0% (Exempt)</option>
-                  <option value="5">5%</option>
-                  <option value="12">12%</option>
-                  <option value="18">18%</option>
-                  <option value="28">28%</option>
-                </select>
+                <div className="relative">
+                  <input
+                    type="number"
+                    name="gstRate"
+                    value={formData.gstRate}
+                    onChange={handleInputChange}
+                    min="0"
+                    max="28"
+                    step="0.01"
+                    disabled={isReadOnly}
+                    placeholder="Enter GST rate"
+                    className="w-full px-3 py-2 pr-8 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary-500 focus:border-transparent disabled:bg-gray-100"
+                  />
+                  <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                    <span className="text-gray-500 text-sm">%</span>
+                  </div>
+                </div>
+                <div className="mt-1 flex flex-wrap gap-1">
+                  {commonGSTRates.map((gstOption) => (
+                    <button
+                      key={gstOption.rate}
+                      type="button"
+                      onClick={() => setFormData(prev => ({ ...prev, gstRate: gstOption.rate }))}
+                      disabled={isReadOnly}
+                      title={gstOption.description}
+                      className={`px-2 py-1 text-xs rounded hover:opacity-80 disabled:opacity-50 ${
+                        gstOption.rate === 18
+                          ? 'bg-blue-100 text-blue-700 hover:bg-blue-200'
+                          : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                      }`}
+                    >
+                      {gstOption.label}
+                    </button>
+                  ))}
+                </div>
+                <p className="text-xs text-gray-500 mt-1">
+                  Enter custom GST rate or use quick buttons for common rates
+                </p>
+
+                {/* GST Error Message */}
+                {gstError && (
+                  <p className={`text-xs mt-1 ${gstError.includes('Note:') ? 'text-amber-600' : 'text-red-600'}`}>
+                    {gstError}
+                  </p>
+                )}
+
+                {/* GST Suggestion based on category */}
+                {formData.category && (() => {
+                  const selectedCategory = categories.find(cat => cat._id === formData.category);
+                  const suggestion = selectedCategory ? getGSTSuggestion(selectedCategory.name) : null;
+                  return suggestion ? (
+                    <div className="mt-2 p-2 bg-green-50 rounded-md border border-green-200">
+                      <p className="text-xs text-green-800">
+                        💡 <strong>Suggestion:</strong> {suggestion.note}
+                        <button
+                          type="button"
+                          onClick={() => setFormData(prev => ({ ...prev, gstRate: suggestion.rate }))}
+                          disabled={isReadOnly}
+                          className="ml-2 px-2 py-0.5 text-xs bg-green-100 text-green-700 rounded hover:bg-green-200 disabled:opacity-50"
+                        >
+                          Use {suggestion.rate}%
+                        </button>
+                      </p>
+                    </div>
+                  ) : null;
+                })()}
+
+                {/* GST Calculation Preview */}
+                {formData.price && formData.gstRate && formData.taxable && (() => {
+                  const calculation = calculateGST(formData.price, formData.gstRate, formData.gstInclusive);
+                  const formatted = formatGSTCalculation(calculation);
+
+                  return (
+                    <div className="mt-2 p-2 bg-blue-50 rounded-md border border-blue-200">
+                      <p className="text-xs font-medium text-blue-800 mb-1">GST Calculation Preview:</p>
+                      <div className="text-xs text-blue-700 space-y-0.5">
+                        <div>Base Price: {formatted.basePrice}</div>
+                        <div>GST Amount ({formatted.gstRate}): {formatted.gstAmount}</div>
+                        <div className="font-medium">Total Price: {formatted.totalPrice}</div>
+                        <div className="text-blue-600 italic">{formatted.breakdown}</div>
+                      </div>
+                    </div>
+                  );
+                })()}
               </div>
 
               {/* GST Type */}

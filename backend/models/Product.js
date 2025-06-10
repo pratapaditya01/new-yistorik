@@ -159,7 +159,14 @@ const productSchema = new mongoose.Schema({
     type: Number,
     default: 18, // Default 18% GST
     min: [0, 'GST rate cannot be negative'],
-    max: [28, 'GST rate cannot exceed 28%']
+    max: [28, 'GST rate cannot exceed 28%'],
+    validate: {
+      validator: function(value) {
+        // Allow up to 2 decimal places
+        return Number.isFinite(value) && /^\d+(\.\d{1,2})?$/.test(value.toString());
+      },
+      message: 'GST rate can have maximum 2 decimal places'
+    }
   },
   gstType: {
     type: String,
