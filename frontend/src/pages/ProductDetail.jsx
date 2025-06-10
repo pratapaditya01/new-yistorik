@@ -481,14 +481,14 @@ const ProductDetail = () => {
                   <TruckIcon className="h-6 w-6 text-gray-400" />
                   <div>
                     <p className="text-sm font-medium text-gray-900">Free Shipping</p>
-                    <p className="text-xs text-gray-600">On orders over $50</p>
+                    <p className="text-xs text-gray-600">On orders over ₹499</p>
                   </div>
                 </div>
 
                 <div className="flex items-center space-x-3">
                   <ShieldCheckIcon className="h-6 w-6 text-gray-400" />
                   <div>
-                    <p className="text-sm font-medium text-gray-900">30-Day Returns</p>
+                    <p className="text-sm font-medium text-gray-900">1-Day Returns</p>
                     <p className="text-xs text-gray-600">Easy returns policy</p>
                   </div>
                 </div>
