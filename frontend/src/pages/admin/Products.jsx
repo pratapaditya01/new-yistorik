@@ -711,9 +711,9 @@ const ProductModal = ({ type, product, categories, onClose, onSave }) => {
 
                 {/* 0% GST Notice */}
                 {formData.gstRate == 0 && (
-                  <div className="mt-2 p-2 bg-green-50 border border-green-200 rounded-md">
-                    <p className="text-sm text-green-700">
-                      ✅ <strong>GST Exempt Product</strong> - No GST will be charged or displayed on the product page
+                  <div className="mt-2 p-2 bg-blue-50 border border-blue-200 rounded-md">
+                    <p className="text-sm text-blue-700">
+                      ℹ️ <strong>0% GST Product</strong> - No GST will be charged on this product
                     </p>
                   </div>
                 )}
@@ -754,13 +754,12 @@ const ProductModal = ({ type, product, categories, onClose, onSave }) => {
                   // Show different preview for 0% GST
                   if (formData.gstRate == 0) {
                     return (
-                      <div className="mt-2 p-2 bg-green-50 rounded-md border border-green-200">
-                        <p className="text-xs font-medium text-green-800 mb-1">GST Calculation Preview:</p>
-                        <div className="text-xs text-green-700 space-y-0.5">
+                      <div className="mt-2 p-2 bg-gray-50 rounded-md border border-gray-200">
+                        <p className="text-xs font-medium text-gray-800 mb-1">Price Preview:</p>
+                        <div className="text-xs text-gray-700 space-y-0.5">
                           <div>Product Price: {formatted.basePrice}</div>
-                          <div>GST Amount: ₹0.00 (Exempt)</div>
-                          <div className="font-medium">Final Price: {formatted.totalPrice}</div>
-                          <div className="text-green-600 italic">This product is GST exempt - no tax will be charged</div>
+                          <div className="font-medium">Customer Price: {formatted.totalPrice}</div>
+                          <div className="text-gray-600 italic">No GST applicable</div>
                         </div>
                       </div>
                     );

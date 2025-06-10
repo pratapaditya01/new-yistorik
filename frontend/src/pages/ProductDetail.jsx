@@ -142,8 +142,7 @@ const ProductDetail = () => {
         // Debug size data from API
         debugSizeFlow.debugProductSizes(response);
 
-        // Set default variants if available
-        // Set default variants if available
+        // Set default variants if available (legacy system)
         if (response.variants && response.variants.length > 0) {
           const colorVariant = response.variants.find(v => v.name.toLowerCase() === 'color');
           const sizeVariant = response.variants.find(v => v.name.toLowerCase() === 'size');
@@ -156,8 +155,22 @@ const ProductDetail = () => {
           }
         }
 
-        // For products without variants, set empty defaults
-        if (!response.variants || response.variants.length === 0) {
+        // Set default size from sizes array (new system)
+        if (response.sizes && response.sizes.length > 0) {
+          // Find first available size with stock
+          const firstAvailableSize = response.sizes.find(size => size.isAvailable && size.stock > 0);
+          if (firstAvailableSize) {
+            setSelectedSize(firstAvailableSize.name);
+            console.log('🎯 AUTO-SELECTED first available size:', firstAvailableSize.name);
+          } else {
+            setSelectedSize(''); // No sizes available
+            console.log('⚠️ No sizes available for selection');
+          }
+        }
+
+        // For products without variants or sizes, set empty defaults
+        if ((!response.variants || response.variants.length === 0) &&
+            (!response.sizes || response.sizes.length === 0)) {
           setSelectedColor('');
           setSelectedSize('');
         }
@@ -192,18 +205,40 @@ const ProductDetail = () => {
   };
 
   const handleAddToCart = () => {
-    // Check if variants are required
+    // Check if variants are required (legacy variants system)
     const hasColorVariant = product.variants && product.variants.find(v => v.name.toLowerCase() === 'color');
     const hasSizeVariant = product.variants && product.variants.find(v => v.name.toLowerCase() === 'size');
+
+    // Check if sizes are required (new sizes system)
+    const hasSizes = product.sizes && product.sizes.length > 0;
+    const availableSizes = hasSizes ? product.sizes.filter(size => size.isAvailable && size.stock > 0) : [];
 
     if (hasColorVariant && !selectedColor) {
       alert('Please select a color');
       return;
     }
 
-    if (hasSizeVariant && !selectedSize) {
+    // Check size requirement for both systems
+    if ((hasSizeVariant || hasSizes) && !selectedSize) {
       alert('Please select a size');
       return;
+    }
+
+    // Validate selected size against available sizes
+    if (hasSizes && selectedSize) {
+      const selectedSizeDetails = product.sizes.find(size => size.name === selectedSize);
+      if (!selectedSizeDetails) {
+        alert('Selected size is not available');
+        return;
+      }
+      if (!selectedSizeDetails.isAvailable) {
+        alert('Selected size is currently unavailable');
+        return;
+      }
+      if (selectedSizeDetails.stock < quantity) {
+        alert(`Only ${selectedSizeDetails.stock} items available in size ${selectedSize}`);
+        return;
+      }
     }
 
     // Prepare selected variants
@@ -403,17 +438,7 @@ const ProductDetail = () => {
                 </div>
               )}
 
-              {/* GST Exempt Notice - Show for 0% GST */}
-              {(product.gstRate === 0 || product.gstRate === null || product.gstRate === undefined) && (
-                <div className="text-sm text-green-600 font-medium bg-green-50 px-2 py-1 rounded">
-                  ✅ GST Exempt Product
-                </div>
-              )}
-
-              {/* Debug GST Info */}
-              <div className="text-xs text-gray-400 mt-1">
-                Debug: GST Rate = {product.gstRate}, Type: {typeof product.gstRate}
-              </div>
+              {/* No GST display for 0% products - clean appearance */}
             </div>
 
             {/* Short Description */}
@@ -444,31 +469,109 @@ const ProductDetail = () => {
               </div>
             )}
 
-            {/* Size Selection */}
-            {product.variants && product.variants.find(v => v.name.toLowerCase() === 'size') && (
+            {/* Size Selection - Support both variants and sizes systems */}
+            {((product.variants && product.variants.find(v => v.name.toLowerCase() === 'size')) ||
+              (product.sizes && product.sizes.length > 0)) && (
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-3">
-                  Size: <span className="font-normal">{selectedSize}</span>
-                </label>
-                <div className="grid grid-cols-6 gap-2">
-                  {product.variants.find(v => v.name.toLowerCase() === 'size').options.map((size) => (
+                <div className="flex items-center justify-between mb-3">
+                  <label className="block text-sm font-medium text-gray-700">
+                    Size: <span className="font-normal">{selectedSize || 'Please select'}</span>
+                  </label>
+                  {product.sizeChart && product.sizeChart.enabled && (
                     <button
-                      key={size}
-                      onClick={() => {
-                        setSelectedSize(size);
-                        console.log('👤 SIZE SELECTION - Size selected:', size);
-                        debugSizeFlow.debugSizeSelection(size, product.sizes, product);
-                      }}
-                      className={`py-2 px-3 border rounded-md text-sm font-medium transition-all ${
-                        selectedSize === size
-                          ? 'border-primary-500 bg-primary-50 text-primary-700'
-                          : 'border-gray-300 text-gray-700 hover:border-gray-400'
-                      }`}
+                      type="button"
+                      className="text-sm text-primary-600 hover:text-primary-700 underline"
+                      onClick={() => alert('Size chart feature coming soon!')}
                     >
-                      {size}
+                      Size Chart
                     </button>
-                  ))}
+                  )}
                 </div>
+                <div className="grid grid-cols-6 gap-2">
+                  {/* Legacy variants system */}
+                  {product.variants && product.variants.find(v => v.name.toLowerCase() === 'size') &&
+                    product.variants.find(v => v.name.toLowerCase() === 'size').options.map((size) => (
+                      <button
+                        key={size}
+                        onClick={() => {
+                          setSelectedSize(size);
+                          console.log('👤 SIZE SELECTION - Size selected:', size);
+                          debugSizeFlow.debugSizeSelection(size, product.sizes, product);
+                        }}
+                        className={`py-2 px-3 border rounded-md text-sm font-medium transition-all ${
+                          selectedSize === size
+                            ? 'border-primary-500 bg-primary-50 text-primary-700'
+                            : 'border-gray-300 text-gray-700 hover:border-gray-400'
+                        }`}
+                      >
+                        {size}
+                      </button>
+                    ))
+                  }
+
+                  {/* New sizes system */}
+                  {product.sizes && product.sizes.length > 0 &&
+                    product.sizes.map((size) => {
+                      const isAvailable = size.isAvailable && size.stock > 0;
+                      return (
+                        <button
+                          key={size.name}
+                          onClick={() => {
+                            if (isAvailable) {
+                              setSelectedSize(size.name);
+                              console.log('👤 SIZE SELECTION - Size selected:', size.name);
+                              debugSizeFlow.debugSizeSelection(size.name, product.sizes, product);
+                            }
+                          }}
+                          disabled={!isAvailable}
+                          className={`py-2 px-3 border rounded-md text-sm font-medium transition-all relative ${
+                            selectedSize === size.name
+                              ? 'border-primary-500 bg-primary-50 text-primary-700'
+                              : isAvailable
+                              ? 'border-gray-300 text-gray-700 hover:border-gray-400'
+                              : 'border-gray-200 text-gray-400 bg-gray-50 cursor-not-allowed'
+                          }`}
+                          title={isAvailable ? `${size.label} - ${size.stock} in stock` : `${size.label} - Out of stock`}
+                        >
+                          {size.name}
+                          {!isAvailable && (
+                            <div className="absolute inset-0 flex items-center justify-center">
+                              <div className="w-full h-0.5 bg-gray-400 transform rotate-45"></div>
+                            </div>
+                          )}
+                        </button>
+                      );
+                    })
+                  }
+                </div>
+
+                {/* Size details for selected size */}
+                {selectedSize && product.sizes && (
+                  (() => {
+                    const sizeDetails = product.sizes.find(s => s.name === selectedSize);
+                    return sizeDetails ? (
+                      <div className="mt-3 p-3 bg-gray-50 rounded-md">
+                        <div className="text-sm text-gray-700">
+                          <span className="font-medium">{sizeDetails.label}</span>
+                          {sizeDetails.stock > 0 ? (
+                            <span className="ml-2 text-green-600">({sizeDetails.stock} in stock)</span>
+                          ) : (
+                            <span className="ml-2 text-red-600">(Out of stock)</span>
+                          )}
+                        </div>
+                        {sizeDetails.measurements && (
+                          <div className="mt-2 text-xs text-gray-600">
+                            {Object.entries(sizeDetails.measurements).map(([key, value]) => (
+                              <span key={key} className="mr-3">
+                                {key.charAt(0).toUpperCase() + key.slice(1)}: {value}"
+                              </span>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    ) : null;
+                  })()
+                )}
               </div>
             )}
 

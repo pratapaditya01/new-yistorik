@@ -21,7 +21,17 @@ const Cart = () => {
 
   const subtotal = getCartTotal();
   const shipping = subtotal > 499 ? 0 : 99; // Free shipping over ₹499, otherwise ₹99
-  const tax = subtotal * 0.18; // 18% GST (Indian tax)
+
+  // Calculate GST based on individual product rates (not flat 18%)
+  const tax = cartItems.reduce((total, item) => {
+    const gstRate = item.product.gstRate || 0;
+    const itemTotal = item.price * item.quantity;
+    const gstAmount = item.product.gstInclusive
+      ? itemTotal - (itemTotal / (1 + gstRate / 100))
+      : itemTotal * (gstRate / 100);
+    return total + gstAmount;
+  }, 0);
+
   const discount = subtotal * (promoDiscount / 100);
   const total = subtotal + shipping + tax - discount;
 
@@ -233,7 +243,7 @@ const Cart = () => {
                 {/* Only show GST if there's tax to be charged */}
                 {tax > 0 && (
                   <div className="flex justify-between text-gray-600">
-                    <span>GST (18%)</span>
+                    <span>GST</span>
                     <span>{formatPrice(tax)}</span>
                   </div>
                 )}
