@@ -206,7 +206,7 @@ const productSchema = new mongoose.Schema({
   // GST and Tax Information (India)
   gstRate: {
     type: Number,
-    default: 18, // Default 18% GST
+    default: 0, // Default 0% GST - admin can set as needed
     min: [0, 'GST rate cannot be negative'],
     max: [28, 'GST rate cannot exceed 28%'],
     validate: {

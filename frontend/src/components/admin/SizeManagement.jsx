@@ -192,7 +192,7 @@ const SizeManagement = ({ sizes, setSizes, sizeChart, setSizeChart, disabled = f
                       type="text"
                       value={size.measurements[measurement] || ''}
                       onChange={(e) => updateSize(index, `measurements.${measurement}`, e.target.value)}
-                      placeholder="e.g., 36-38\""
+                      placeholder="e.g., 36-38 inches"
                       disabled={disabled}
                       className="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:ring-1 focus:ring-primary-500 focus:border-transparent disabled:bg-gray-100"
                     />

@@ -348,7 +348,7 @@ const ProductModal = ({ type, product, categories, onClose, onSave }) => {
     featured: false,
     images: [],
     // GST fields
-    gstRate: 18,
+    gstRate: 0,  // Default to 0% GST, user can change as needed
     gstType: 'CGST_SGST',
     hsnCode: '',
     gstInclusive: false,
@@ -445,8 +445,10 @@ const ProductModal = ({ type, product, categories, onClose, onSave }) => {
         quantity: parseInt(formData.stockQuantity) || 0,
         isActive: formData.inStock,
         isFeatured: formData.featured,
-        // GST fields
-        gstRate: parseFloat(formData.gstRate) || 18,
+        // GST fields - CRITICAL: Don't use || 18 as it converts 0 to 18!
+        gstRate: formData.gstRate !== '' && formData.gstRate !== null && formData.gstRate !== undefined
+          ? parseFloat(formData.gstRate)
+          : 0,  // Default to 0% if empty/null/undefined
         gstType: formData.gstType,
         hsnCode: formData.hsnCode,
         gstInclusive: formData.gstInclusive,

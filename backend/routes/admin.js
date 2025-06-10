@@ -164,16 +164,21 @@ router.post('/products', async (req, res) => {
       productData.quantity = parseInt(productData.quantity);
     }
 
-    // Handle GST fields
-    if (productData.gstRate !== undefined) {
+    // Handle GST fields - CRITICAL: Properly handle 0% GST
+    if (productData.gstRate !== undefined && productData.gstRate !== null && productData.gstRate !== '') {
       productData.gstRate = parseFloat(productData.gstRate);
       // Validate GST rate
-      if (productData.gstRate < 0 || productData.gstRate > 28) {
+      if (isNaN(productData.gstRate) || productData.gstRate < 0 || productData.gstRate > 28) {
         return res.status(400).json({
           message: 'GST rate must be between 0% and 28%'
         });
       }
+    } else {
+      // Explicitly set to 0 if not provided or empty
+      productData.gstRate = 0;
     }
+
+    console.log('GST Rate being saved:', productData.gstRate);
 
     // Validate HSN code format (basic validation)
     if (productData.hsnCode && productData.hsnCode.length > 10) {
@@ -226,6 +231,22 @@ router.put('/products/:id', async (req, res) => {
     }
 
     const updateData = { ...req.body };
+
+    // Handle GST fields for updates - CRITICAL: Properly handle 0% GST
+    if (updateData.gstRate !== undefined && updateData.gstRate !== null && updateData.gstRate !== '') {
+      updateData.gstRate = parseFloat(updateData.gstRate);
+      // Validate GST rate
+      if (isNaN(updateData.gstRate) || updateData.gstRate < 0 || updateData.gstRate > 28) {
+        return res.status(400).json({
+          message: 'GST rate must be between 0% and 28%'
+        });
+      }
+    } else if (updateData.gstRate === '' || updateData.gstRate === null) {
+      // Explicitly set to 0 if empty or null
+      updateData.gstRate = 0;
+    }
+
+    console.log('GST Rate being updated:', updateData.gstRate);
 
     // Images are now handled separately through the upload API
     // They come as an array of image objects with url and publicId

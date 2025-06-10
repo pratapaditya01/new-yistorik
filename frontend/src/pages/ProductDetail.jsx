@@ -385,12 +385,17 @@ const ProductDetail = () => {
                 </div>
               )}
 
-              {/* GST Exempt Notice */}
-              {product.gstRate === 0 && (
-                <div className="text-sm text-green-600 font-medium">
+              {/* GST Exempt Notice - Show for 0% GST */}
+              {(product.gstRate === 0 || product.gstRate === null || product.gstRate === undefined) && (
+                <div className="text-sm text-green-600 font-medium bg-green-50 px-2 py-1 rounded">
                   ✅ GST Exempt Product
                 </div>
               )}
+
+              {/* Debug GST Info */}
+              <div className="text-xs text-gray-400 mt-1">
+                Debug: GST Rate = {product.gstRate}, Type: {typeof product.gstRate}
+              </div>
             </div>
 
             {/* Short Description */}
