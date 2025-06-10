@@ -16,7 +16,7 @@ import ProductDetail from './pages/ProductDetail';
 
 // Lazy load less critical pages for better initial load performance
 const Cart = lazy(() => import('./pages/Cart'));
-const Checkout = lazy(() => import('./pages/CheckoutNew'));
+const Checkout = lazy(() => import('./pages/Checkout'));
 const Login = lazy(() => import('./pages/auth/Login'));
 const Register = lazy(() => import('./pages/auth/Register'));
 const Profile = lazy(() => import('./pages/auth/Profile'));

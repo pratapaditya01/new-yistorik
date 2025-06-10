@@ -18,41 +18,9 @@ const RazorpayPayment = ({
   className = '' 
 }) => {
   const [isProcessing, setIsProcessing] = useState(false);
-  const [paymentMethods, setPaymentMethods] = useState([]);
-  const [selectedMethod, setSelectedMethod] = useState('card');
   const { clearCart } = useCart();
   const { user } = useAuth();
   const navigate = useNavigate();
-
-  useEffect(() => {
-    // Initialize payment methods
-    setPaymentMethods([
-      {
-        id: 'card',
-        name: 'Credit/Debit Card',
-        icon: CreditCardIcon,
-        description: 'Visa, Mastercard, RuPay, American Express'
-      },
-      {
-        id: 'netbanking',
-        name: 'Net Banking',
-        icon: BanknotesIcon,
-        description: 'All major banks supported'
-      },
-      {
-        id: 'upi',
-        name: 'UPI',
-        icon: DevicePhoneMobileIcon,
-        description: 'Google Pay, PhonePe, Paytm, BHIM'
-      },
-      {
-        id: 'wallet',
-        name: 'Digital Wallets',
-        icon: WalletIcon,
-        description: 'Paytm, Mobikwik, Freecharge'
-      }
-    ]);
-  }, []);
 
   const handlePayment = async () => {
     if (!orderData || !orderData.amount) {
@@ -119,50 +87,42 @@ const RazorpayPayment = ({
 
   return (
     <div className={`bg-white rounded-lg shadow-md p-6 ${className}`}>
+      {/* Razorpay Payment Header */}
       <div className="mb-6">
         <h3 className="text-lg font-semibold text-gray-900 mb-2">
-          Payment Methods
+          🚀 Complete Your Payment
         </h3>
         <p className="text-sm text-gray-600">
-          Choose your preferred payment method
+          Secure payment powered by Razorpay - supports all major payment methods
         </p>
       </div>
 
-      {/* Payment Methods */}
-      <div className="space-y-3 mb-6">
-        {paymentMethods.map((method) => {
-          const Icon = method.icon;
-          return (
-            <div
-              key={method.id}
-              className={`relative flex items-center p-4 border rounded-lg cursor-pointer transition-colors ${
-                selectedMethod === method.id
-                  ? 'border-primary-500 bg-primary-50'
-                  : 'border-gray-200 hover:border-gray-300'
-              }`}
-              onClick={() => setSelectedMethod(method.id)}
-            >
-              <input
-                type="radio"
-                name="paymentMethod"
-                value={method.id}
-                checked={selectedMethod === method.id}
-                onChange={() => setSelectedMethod(method.id)}
-                className="sr-only"
-              />
-              <Icon className="w-6 h-6 text-gray-600 mr-3" />
-              <div className="flex-1">
-                <div className="font-medium text-gray-900">{method.name}</div>
-                <div className="text-sm text-gray-500">{method.description}</div>
-              </div>
-              {selectedMethod === method.id && (
-                <div className="w-4 h-4 bg-primary-500 rounded-full flex items-center justify-center">
-                  <div className="w-2 h-2 bg-white rounded-full"></div>
-                </div>
-              )}
-            </div>
-          );
-        })}
+      {/* Payment Methods Info */}
+      <div className="bg-gradient-to-r from-blue-50 to-purple-50 border border-blue-200 rounded-lg p-4 mb-6">
+        <div className="flex items-center mb-3">
+          <CreditCardIcon className="w-6 h-6 text-blue-600 mr-2" />
+          <h4 className="text-sm font-medium text-blue-800">
+            Multiple Payment Options Available
+          </h4>
+        </div>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+          <div className="flex items-center text-xs text-blue-700">
+            <span className="w-2 h-2 bg-blue-500 rounded-full mr-2"></span>
+            Credit/Debit Cards
+          </div>
+          <div className="flex items-center text-xs text-green-700">
+            <span className="w-2 h-2 bg-green-500 rounded-full mr-2"></span>
+            UPI (GPay, PhonePe)
+          </div>
+          <div className="flex items-center text-xs text-purple-700">
+            <span className="w-2 h-2 bg-purple-500 rounded-full mr-2"></span>
+            Net Banking
+          </div>
+          <div className="flex items-center text-xs text-orange-700">
+            <span className="w-2 h-2 bg-orange-500 rounded-full mr-2"></span>
+            Digital Wallets
+          </div>
+        </div>
       </div>
 
       {/* Order Summary */}
