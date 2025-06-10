@@ -6,6 +6,7 @@ import { useAuth } from '../context/AuthContext';
 import { orderService } from '../services/orderService';
 import { formatPrice } from '../utils/currency';
 import RazorpayPayment from '../components/payment/RazorpayPayment';
+import PaymentMethodDebug from '../components/debug/PaymentMethodDebug';
 
 const Checkout = () => {
   const navigate = useNavigate();
@@ -169,7 +170,12 @@ const Checkout = () => {
   return (
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-8">Checkout</h1>
+        <div className="flex items-center justify-between mb-8">
+          <h1 className="text-3xl font-bold text-gray-900">Checkout</h1>
+          <div className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded">
+            v2.0 - Razorpay Enabled ✅
+          </div>
+        </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Checkout Form */}
@@ -334,31 +340,67 @@ const Checkout = () => {
             {/* Payment Method */}
             <div className="bg-white rounded-lg shadow p-6">
               <h2 className="text-xl font-semibold text-gray-900 mb-4">Payment Method</h2>
-              <div className="space-y-3">
-                <label className="flex items-center">
-                  <input
-                    type="radio"
-                    name="paymentMethod"
-                    value="razorpay"
-                    checked={paymentMethod === 'razorpay'}
-                    onChange={(e) => setPaymentMethod(e.target.value)}
-                    className="text-primary-600 focus:ring-primary-500"
-                  />
-                  <span className="ml-2 text-sm text-gray-700">
-                    Online Payment (Cards, UPI, Net Banking, Wallets)
-                  </span>
-                </label>
-                <label className="flex items-center">
-                  <input
-                    type="radio"
-                    name="paymentMethod"
-                    value="cash_on_delivery"
-                    checked={paymentMethod === 'cash_on_delivery'}
-                    onChange={(e) => setPaymentMethod(e.target.value)}
-                    className="text-primary-600 focus:ring-primary-500"
-                  />
-                  <span className="ml-2 text-sm text-gray-700">Cash on Delivery</span>
-                </label>
+
+              {/* Debug Component */}
+              <PaymentMethodDebug currentMethod={paymentMethod} />
+              <div className="space-y-4">
+                {/* Razorpay Online Payment */}
+                <div className={`border rounded-lg p-4 cursor-pointer transition-colors ${
+                  paymentMethod === 'razorpay'
+                    ? 'border-primary-500 bg-primary-50'
+                    : 'border-gray-200 hover:border-gray-300'
+                }`}>
+                  <label className="flex items-start cursor-pointer">
+                    <input
+                      type="radio"
+                      name="paymentMethod"
+                      value="razorpay"
+                      checked={paymentMethod === 'razorpay'}
+                      onChange={(e) => setPaymentMethod(e.target.value)}
+                      className="mt-1 text-primary-600 focus:ring-primary-500"
+                    />
+                    <div className="ml-3 flex-1">
+                      <div className="font-medium text-gray-900">
+                        💳 Razorpay - Online Payment
+                      </div>
+                      <div className="text-sm text-gray-600 mt-1">
+                        Credit/Debit Cards, UPI, Net Banking, Digital Wallets
+                      </div>
+                      <div className="flex items-center space-x-2 mt-2">
+                        <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">Cards</span>
+                        <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">UPI</span>
+                        <span className="text-xs bg-purple-100 text-purple-800 px-2 py-1 rounded">Net Banking</span>
+                        <span className="text-xs bg-orange-100 text-orange-800 px-2 py-1 rounded">Wallets</span>
+                      </div>
+                    </div>
+                  </label>
+                </div>
+
+                {/* Cash on Delivery */}
+                <div className={`border rounded-lg p-4 cursor-pointer transition-colors ${
+                  paymentMethod === 'cash_on_delivery'
+                    ? 'border-primary-500 bg-primary-50'
+                    : 'border-gray-200 hover:border-gray-300'
+                }`}>
+                  <label className="flex items-start cursor-pointer">
+                    <input
+                      type="radio"
+                      name="paymentMethod"
+                      value="cash_on_delivery"
+                      checked={paymentMethod === 'cash_on_delivery'}
+                      onChange={(e) => setPaymentMethod(e.target.value)}
+                      className="mt-1 text-primary-600 focus:ring-primary-500"
+                    />
+                    <div className="ml-3 flex-1">
+                      <div className="font-medium text-gray-900">
+                        💵 Cash on Delivery
+                      </div>
+                      <div className="text-sm text-gray-600 mt-1">
+                        Pay when your order is delivered to your doorstep
+                      </div>
+                    </div>
+                  </label>
+                </div>
               </div>
 
               {/* Razorpay Payment Component */}
