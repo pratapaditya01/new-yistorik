@@ -136,6 +136,7 @@ app.use('/api/orders', require('./routes/orders'));
 app.use('/api/users', require('./routes/users'));
 app.use('/api/admin', require('./routes/admin'));
 app.use('/api/upload', require('./routes/upload'));
+app.use('/api/payment', require('./routes/payment'));
 
 // Health check endpoint
 app.get('/api/health', async (req, res) => {

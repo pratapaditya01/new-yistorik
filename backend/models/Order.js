@@ -95,13 +95,34 @@ const orderSchema = new mongoose.Schema({
   paymentMethod: {
     type: String,
     required: true,
-    enum: ['credit_card', 'debit_card', 'paypal', 'stripe', 'cash_on_delivery']
+    enum: ['credit_card', 'debit_card', 'paypal', 'stripe', 'razorpay', 'cash_on_delivery']
   },
   paymentResult: {
     id: String,
     status: String,
     update_time: String,
     email_address: String
+  },
+
+  // Razorpay specific fields
+  razorpayOrderId: {
+    type: String,
+    sparse: true // Allows multiple null values
+  },
+  razorpayPaymentId: {
+    type: String,
+    sparse: true
+  },
+  paymentDetails: {
+    method: String, // card, netbanking, wallet, upi, etc.
+    bank: String,
+    wallet: String,
+    vpa: String, // UPI VPA
+    cardId: String,
+    amount: Number,
+    currency: String,
+    status: String,
+    createdAt: Date
   },
   itemsPrice: {
     type: Number,

@@ -5,6 +5,7 @@ import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { orderService } from '../services/orderService';
 import { formatPrice } from '../utils/currency';
+import RazorpayPayment from '../components/payment/RazorpayPayment';
 
 const Checkout = () => {
   const navigate = useNavigate();
@@ -29,7 +30,7 @@ const Checkout = () => {
     country: 'India'
   });
 
-  const [paymentMethod, setPaymentMethod] = useState('credit_card');
+  const [paymentMethod, setPaymentMethod] = useState('razorpay');
 
   const handleGuestInfoChange = (e) => {
     setGuestInfo({
@@ -338,23 +339,14 @@ const Checkout = () => {
                   <input
                     type="radio"
                     name="paymentMethod"
-                    value="credit_card"
-                    checked={paymentMethod === 'credit_card'}
+                    value="razorpay"
+                    checked={paymentMethod === 'razorpay'}
                     onChange={(e) => setPaymentMethod(e.target.value)}
                     className="text-primary-600 focus:ring-primary-500"
                   />
-                  <span className="ml-2 text-sm text-gray-700">Credit/Debit Card</span>
-                </label>
-                <label className="flex items-center">
-                  <input
-                    type="radio"
-                    name="paymentMethod"
-                    value="paypal"
-                    checked={paymentMethod === 'paypal'}
-                    onChange={(e) => setPaymentMethod(e.target.value)}
-                    className="text-primary-600 focus:ring-primary-500"
-                  />
-                  <span className="ml-2 text-sm text-gray-700">PayPal</span>
+                  <span className="ml-2 text-sm text-gray-700">
+                    Online Payment (Cards, UPI, Net Banking, Wallets)
+                  </span>
                 </label>
                 <label className="flex items-center">
                   <input
@@ -368,6 +360,29 @@ const Checkout = () => {
                   <span className="ml-2 text-sm text-gray-700">Cash on Delivery</span>
                 </label>
               </div>
+
+              {/* Razorpay Payment Component */}
+              {paymentMethod === 'razorpay' && (
+                <div className="mt-6">
+                  <RazorpayPayment
+                    orderData={{
+                      amount: getTotalPrice() + (getTotalPrice() > 499 ? 0 : 99) + (getTotalPrice() * 0.18),
+                      itemsPrice: getTotalPrice(),
+                      shippingPrice: getTotalPrice() > 499 ? 0 : 99,
+                      taxPrice: getTotalPrice() * 0.18,
+                      items: cartItems,
+                      shippingAddress: shippingAddress
+                    }}
+                    onSuccess={() => {
+                      toast.success('Payment successful!');
+                      // Clear cart and navigate will be handled by the component
+                    }}
+                    onError={(error) => {
+                      toast.error(error.message || 'Payment failed');
+                    }}
+                  />
+                </div>
+              )}
             </div>
           </div>
 
