@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useSearchParams } from 'react-router-dom';
+import { Link, useSearchParams, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { toast } from 'react-hot-toast';
 import { productService } from '../services/productService';
@@ -21,6 +21,9 @@ import {
 } from '@heroicons/react/24/outline';
 import { HeartIcon as HeartSolidIcon } from '@heroicons/react/24/solid';
 
+// Import test utility for easy debugging
+import '../utils/testProductsPageFlow';
+
 const Products = () => {
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
@@ -28,6 +31,7 @@ const Products = () => {
   const [error, setError] = useState(null);
   const [searchParams, setSearchParams] = useSearchParams();
   const { addToCart } = useCart();
+  const navigate = useNavigate();
 
   // Filter states
   const [filters, setFilters] = useState({
@@ -148,7 +152,20 @@ const Products = () => {
   };
 
   const handleAddToCart = (product) => {
-    addToCart(product, 1);
+    // Check if product has sizes that require selection
+    const hasSizes = product.sizes && product.sizes.length > 0;
+    const hasVariants = product.variants && product.variants.some(v => v.name.toLowerCase() === 'size');
+
+    if (hasSizes || hasVariants) {
+      // Product has sizes - redirect to product detail page for size selection
+      console.log('🔄 Product has sizes - redirecting to product page for size selection');
+      navigate(`/products/${product.slug}`);
+      toast.info('Please select a size for this product');
+    } else {
+      // Product doesn't have sizes - add directly to cart
+      console.log('✅ Product has no sizes - adding directly to cart');
+      addToCart(product, 1);
+    }
   };
 
   const renderStars = (rating) => {
@@ -392,7 +409,12 @@ const Products = () => {
                             className="flex-1 bg-primary-600 text-white px-4 py-2 rounded-md hover:bg-primary-700 transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed flex items-center justify-center"
                           >
                             <ShoppingCartIcon className="h-4 w-4 mr-2" />
-                            {(product.isActive !== undefined ? product.isActive : product.inStock) ? 'Add to Cart' : 'Out of Stock'}
+                            {!(product.isActive !== undefined ? product.isActive : product.inStock)
+                              ? 'Out of Stock'
+                              : (product.sizes && product.sizes.length > 0) || (product.variants && product.variants.some(v => v.name.toLowerCase() === 'size'))
+                              ? 'Select Options'
+                              : 'Add to Cart'
+                            }
                           </button>
 
                           <button className="p-2 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors">
