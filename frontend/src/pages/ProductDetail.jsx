@@ -19,6 +19,7 @@ import {
 import { HeartIcon as HeartSolidIcon } from '@heroicons/react/24/solid';
 import { debugGSTFlow } from '../utils/gstFlowDebug';
 import { debugSizeFlow } from '../utils/sizeFlowDebug';
+import { analytics } from '../utils/analytics';
 
 const ProductDetail = () => {
   const { slug } = useParams();
@@ -142,6 +143,9 @@ const ProductDetail = () => {
         // Debug size data from API
         debugSizeFlow.debugProductSizes(response);
 
+        // Track product view
+        analytics.trackProductView(response);
+
         // Set default variants if available (legacy system)
         if (response.variants && response.variants.length > 0) {
           const colorVariant = response.variants.find(v => v.name.toLowerCase() === 'color');
@@ -257,6 +261,9 @@ const ProductDetail = () => {
     if (addToCartValid) {
       // Add to cart with product object, quantity, and variants
       addToCart(product, quantity, selectedVariants);
+
+      // Track add to cart event
+      analytics.trackAddToCart(product, quantity, selectedVariants);
     } else {
       console.error('❌ Add to cart failed validation');
     }

@@ -9,6 +9,7 @@ import RazorpayPayment from '../components/payment/RazorpayPayment';
 import PaymentMethodDebug from '../components/debug/PaymentMethodDebug';
 import { debugGSTFlow } from '../utils/gstFlowDebug';
 import { debugSizeFlow } from '../utils/sizeFlowDebug';
+import { analytics } from '../utils/analytics';
 
 const Checkout = () => {
   const navigate = useNavigate();
@@ -34,6 +35,13 @@ const Checkout = () => {
   });
 
   const [paymentMethod, setPaymentMethod] = useState('razorpay');
+
+  // Track checkout start when component mounts
+  useEffect(() => {
+    if (cartItems.length > 0) {
+      analytics.trackCheckoutStart(cartItems, getTotalPrice());
+    }
+  }, [cartItems, getTotalPrice]);
 
   const handleGuestInfoChange = (e) => {
     setGuestInfo({
@@ -153,6 +161,12 @@ const Checkout = () => {
       const response = await orderService.createOrder(orderData);
 
       console.log('Order created:', response);
+
+      // Track purchase completion
+      analytics.trackPurchase({
+        ...response,
+        paymentMethod: 'cod'
+      });
 
       // Clear cart and show success
       clearCart();

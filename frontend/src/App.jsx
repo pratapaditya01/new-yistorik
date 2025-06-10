@@ -1,6 +1,7 @@
 import React, { Suspense, lazy, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
+import { Analytics } from '@vercel/analytics/react';
 import { AuthProvider } from './context/AuthContext';
 import { CartProvider } from './context/CartContext';
 import LoadingSpinner from './components/ui/LoadingSpinner';
@@ -166,6 +167,9 @@ function App() {
               },
             }}
           />
+
+          {/* Vercel Analytics - Track page views and visitors */}
+          <Analytics />
         </Router>
       </CartProvider>
     </AuthProvider>

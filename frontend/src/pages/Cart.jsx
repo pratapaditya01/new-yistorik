@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useCart } from '../context/CartContext';
 import { formatPrice } from '../utils/currency';
+import { analytics } from '../utils/analytics';
 import {
   TrashIcon,
   PlusIcon,
@@ -34,6 +35,13 @@ const Cart = () => {
 
   const discount = subtotal * (promoDiscount / 100);
   const total = subtotal + shipping + tax - discount;
+
+  // Track cart view when component mounts
+  useEffect(() => {
+    if (cartItems.length > 0) {
+      analytics.trackCartView(cartItems, total);
+    }
+  }, [cartItems, total]);
 
   const handleQuantityChange = (item, newQuantity) => {
     if (newQuantity <= 0) {

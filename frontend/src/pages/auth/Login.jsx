@@ -9,6 +9,7 @@ import {
   LockClosedIcon,
 } from '@heroicons/react/24/outline';
 import toast from 'react-hot-toast';
+import { analytics } from '../../utils/analytics';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -68,6 +69,9 @@ const Login = () => {
     try {
       const result = await login(formData.email, formData.password);
       if (result.success) {
+        // Track successful login
+        analytics.trackUserLogin('email');
+
         toast.success('Login successful!');
         // Navigate based on user role
         const redirectPath = result.user?.role === 'admin' ? '/admin' : from;
