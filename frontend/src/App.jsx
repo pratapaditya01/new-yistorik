@@ -6,6 +6,9 @@ import { AuthProvider } from './context/AuthContext';
 import { CartProvider } from './context/CartContext';
 import LoadingSpinner from './components/ui/LoadingSpinner';
 
+// Import analytics guide for easy access in console
+import './utils/analyticsGuide';
+
 // Layout Components (Keep these as regular imports for better UX)
 import Navbar from './components/layout/Navbar';
 import Footer from './components/layout/Footer';
