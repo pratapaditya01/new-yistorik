@@ -156,19 +156,36 @@ router.get('/:slug', optionalAuth, async (req, res) => {
 router.get('/featured/list', async (req, res) => {
   try {
     const limit = parseInt(req.query.limit) || 8;
-    
-    const products = await Product.find({ 
-      isActive: true, 
-      isFeatured: true 
+
+    console.log('🌟 Fetching featured products, limit:', limit);
+
+    const products = await Product.find({
+      isActive: true,
+      isFeatured: true
     })
       .populate('category', 'name slug')
+      .populate('subcategory', 'name slug')
       .sort({ sortOrder: 1, createdAt: -1 })
       .limit(limit)
-      .select('-reviews');
+      .select('-reviews -description')
+      .lean(); // Use lean for better performance
 
+    console.log('🌟 Found featured products:', products.length);
+
+    if (products.length > 0) {
+      console.log('🌟 First featured product:', {
+        name: products[0].name,
+        images: products[0].images,
+        isFeatured: products[0].isFeatured,
+        isActive: products[0].isActive
+      });
+    }
+
+    // Set cache headers
+    res.set('Cache-Control', 'public, max-age=300'); // 5 minutes cache
     res.json(products);
   } catch (error) {
-    console.error('Featured products fetch error:', error);
+    console.error('❌ Featured products fetch error:', error);
     res.status(500).json({ message: 'Server error fetching featured products' });
   }
 });

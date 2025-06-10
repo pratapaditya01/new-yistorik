@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { productService } from '../services/productService';
 import LoadingSpinner from '../components/ui/LoadingSpinner';
 import { ArrowRightIcon } from '@heroicons/react/24/outline';
+import { getMainImageUrl } from '../utils/imageUtils';
 
 const Home = () => {
   const [featuredProducts, setFeaturedProducts] = useState([]);
@@ -12,10 +13,19 @@ const Home = () => {
   useEffect(() => {
     const fetchFeaturedProducts = async () => {
       try {
+        console.log('🏠 Fetching featured products for home page...');
         const products = await productService.getFeaturedProducts(8);
-        setFeaturedProducts(products);
+        console.log('🏠 Featured products received:', products);
+        console.log('🏠 Number of featured products:', products?.length || 0);
+
+        if (products && products.length > 0) {
+          console.log('🏠 First product images:', products[0]?.images);
+          console.log('🏠 First product image URL:', products[0]?.images?.[0]?.url);
+        }
+
+        setFeaturedProducts(products || []);
       } catch (error) {
-        console.error('Error fetching featured products:', error);
+        console.error('❌ Error fetching featured products:', error);
       } finally {
         setIsLoading(false);
       }
@@ -155,9 +165,12 @@ const Home = () => {
                     <div className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow overflow-hidden">
                       <div className="relative w-full h-64 overflow-hidden">
                         <img
-                          src={product.images?.[0]?.url || 'https://via.placeholder.com/300'}
-                          alt={product.name}
+                          src={getMainImageUrl(product.images)}
+                          alt={product.images?.[0]?.alt || product.name}
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                          onError={(e) => {
+                            e.target.src = 'https://via.placeholder.com/300x300/f3f4f6/9ca3af?text=No+Image';
+                          }}
                         />
                       </div>
                       <div className="p-4">

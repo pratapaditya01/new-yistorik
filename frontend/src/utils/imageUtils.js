@@ -48,14 +48,13 @@ export const getImageUrl = (imageUrl, options = {}) => {
   if (imageUrl.startsWith('http')) {
     processedUrl = imageUrl;
   }
-  // If it's a relative URL starting with /uploads/, use API endpoint
+  // If it's a relative URL starting with /uploads/, construct full URL
   else if (imageUrl.startsWith('/uploads/')) {
-    const filename = imageUrl.replace('/uploads/', '');
-    processedUrl = `${API_BASE_URL}/api/upload/image/${filename}`;
+    processedUrl = `${API_BASE_URL}${imageUrl}`;
   }
-  // If it's just a filename, use API endpoint
+  // If it's just a filename, use uploads path
   else if (!imageUrl.startsWith('/')) {
-    processedUrl = `${API_BASE_URL}/api/upload/image/${imageUrl}`;
+    processedUrl = `${API_BASE_URL}/uploads/${imageUrl}`;
   }
   // Fallback to direct URL construction
   else {
@@ -91,18 +90,30 @@ export const getImageUrl = (imageUrl, options = {}) => {
  * @returns {string} - The main image URL
  */
 export const getMainImageUrl = (images) => {
-  if (!images || images.length === 0) {
-    return '/placeholder-image.jpg';
+  // Handle null, undefined, or empty arrays
+  if (!images || !Array.isArray(images) || images.length === 0) {
+    return 'https://via.placeholder.com/300x300/f3f4f6/9ca3af?text=No+Image';
   }
-  
-  // Find the main image
-  const mainImage = images.find(img => img.isMain);
-  if (mainImage) {
-    return getImageUrl(mainImage.url);
+
+  try {
+    // Find the main image
+    const mainImage = images.find(img => img && img.isMain && img.url);
+    if (mainImage && mainImage.url) {
+      return getImageUrl(mainImage.url);
+    }
+
+    // If no main image, use the first one with a URL
+    const firstImageWithUrl = images.find(img => img && img.url);
+    if (firstImageWithUrl && firstImageWithUrl.url) {
+      return getImageUrl(firstImageWithUrl.url);
+    }
+
+    // Fallback if no valid images found
+    return 'https://via.placeholder.com/300x300/f3f4f6/9ca3af?text=No+Image';
+  } catch (error) {
+    console.warn('Error processing image URL:', error);
+    return 'https://via.placeholder.com/300x300/f3f4f6/9ca3af?text=Error';
   }
-  
-  // If no main image, use the first one
-  return getImageUrl(images[0].url);
 };
 
 /**
