@@ -476,10 +476,11 @@ const ProductModal = ({ type, product, categories, onClose, onSave }) => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {/* Product Name */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="admin-product-name" className="block text-sm font-medium text-gray-700 mb-1">
                 Product Name *
               </label>
               <input
+                id="admin-product-name"
                 type="text"
                 name="name"
                 value={formData.name}
@@ -487,7 +488,12 @@ const ProductModal = ({ type, product, categories, onClose, onSave }) => {
                 required
                 disabled={isReadOnly}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary-500 focus:border-transparent disabled:bg-gray-100"
+                placeholder="Enter product name"
+                aria-describedby="admin-product-name-help"
               />
+              <p id="admin-product-name-help" className="text-xs text-gray-500 mt-1">
+                Enter a descriptive name for your product
+              </p>
             </div>
 
             {/* SKU */}

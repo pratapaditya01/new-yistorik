@@ -9,6 +9,7 @@ import api from '../services/api';
 import { getMainImageUrl } from '../utils/imageUtils';
 import { formatPrice } from '../utils/currency';
 import ImageWithFallback from '../components/ui/ImageWithFallback';
+import CORSImage from '../components/ui/CORSImage';
 import { NetworkError, LoadingWithError } from '../components/ui/ErrorBoundary';
 import ServiceStatus from '../components/ServiceStatus';
 import {
@@ -202,16 +203,19 @@ const Products = () => {
 
               {/* Search */}
               <div className="mb-6">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label htmlFor="product-search" className="block text-sm font-medium text-gray-700 mb-2">
                   Search
                 </label>
                 <div className="relative">
                   <input
+                    id="product-search"
+                    name="search"
                     type="text"
                     value={filters.search}
                     onChange={(e) => handleFilterChange('search', e.target.value)}
                     placeholder="Search products..."
                     className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                    aria-label="Search products"
                   />
                   <MagnifyingGlassIcon className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />
                 </div>
@@ -219,13 +223,16 @@ const Products = () => {
 
               {/* Category Filter */}
               <div className="mb-6">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label htmlFor="category-filter" className="block text-sm font-medium text-gray-700 mb-2">
                   Category
                 </label>
                 <select
+                  id="category-filter"
+                  name="category"
                   value={filters.category}
                   onChange={(e) => handleFilterChange('category', e.target.value)}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                  aria-label="Filter by category"
                 >
                   <option value="">All Categories</option>
                   {categories.map((category) => (
@@ -283,11 +290,14 @@ const Products = () => {
               </p>
 
               <div className="flex items-center space-x-4">
-                <label className="text-sm font-medium text-gray-700">Sort by:</label>
+                <label htmlFor="sort-products" className="text-sm font-medium text-gray-700">Sort by:</label>
                 <select
+                  id="sort-products"
+                  name="sort"
                   value={filters.sort}
                   onChange={(e) => handleFilterChange('sort', e.target.value)}
                   className="px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                  aria-label="Sort products by"
                 >
                   <option value="newest">Newest</option>
                   <option value="price_asc">Price: Low to High</option>
@@ -320,11 +330,10 @@ const Products = () => {
                     >
                       <Link to={`/products/${product.slug}`} className="block">
                         <div className="relative overflow-hidden">
-                          <ImageWithFallback
+                          <CORSImage
                             src={getMainImageUrl(product.images)}
                             alt={product.images[0]?.alt || product.name}
                             fallbackType="product"
-                            placeholderText="Product Image"
                             className="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-300"
                           />
                           {product.comparePrice && (

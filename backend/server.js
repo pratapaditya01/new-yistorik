@@ -107,13 +107,24 @@ app.use((req, res, next) => {
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
-// Static files for uploads with CORS headers
+// Static files for uploads with enhanced CORS headers
 app.use('/uploads', (req, res, next) => {
-  // Set CORS headers for static files
+  // Set comprehensive CORS headers for static files
   res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Methods', 'GET, OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+  res.header('Access-Control-Allow-Methods', 'GET, HEAD, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+  res.header('Access-Control-Expose-Headers', 'Content-Length, Content-Type');
   res.header('Cross-Origin-Resource-Policy', 'cross-origin');
+  res.header('Cross-Origin-Embedder-Policy', 'unsafe-none');
+
+  // Handle preflight requests
+  if (req.method === 'OPTIONS') {
+    res.status(200).end();
+    return;
+  }
+
+  // Set cache headers for images
+  res.header('Cache-Control', 'public, max-age=31536000'); // 1 year
   next();
 }, express.static('uploads'));
 
