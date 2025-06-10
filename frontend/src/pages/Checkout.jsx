@@ -370,7 +370,14 @@ const Checkout = () => {
                       itemsPrice: getTotalPrice(),
                       shippingPrice: getTotalPrice() > 499 ? 0 : 99,
                       taxPrice: getTotalPrice() * 0.18,
-                      items: cartItems,
+                      items: cartItems.map(item => ({
+                        productId: item.product._id,
+                        name: item.product.name,
+                        image: item.product.images?.[0]?.url || '/placeholder.jpg',
+                        price: item.price,
+                        quantity: item.quantity,
+                        selectedVariants: item.selectedVariants || []
+                      })),
                       shippingAddress: shippingAddress
                     }}
                     onSuccess={() => {

@@ -56,10 +56,27 @@ router.post('/', async (req, res) => {
     // Verify products exist and prices are correct
     console.log('Order items received:', orderItems);
     for (let item of orderItems) {
-      console.log(`Looking for product with ID: ${item.product}`);
-      const product = await Product.findById(item.product);
+      // Handle both productId and product field names
+      const productId = item.productId || item.product;
+      console.log(`Looking for product with ID: ${productId}`);
+      console.log(`Item structure:`, JSON.stringify(item, null, 2));
+
+      if (!productId) {
+        console.log(`No product ID found for item: ${item.name}`);
+        return res.status(400).json({ message: `Product ID missing for ${item.name}` });
+      }
+
+      // Validate ObjectId format
+      if (!productId.match(/^[0-9a-fA-F]{24}$/)) {
+        console.log(`Invalid product ID format: ${productId}`);
+        return res.status(400).json({ message: `Invalid product ID format for ${item.name}` });
+      }
+
+      const product = await Product.findById(productId);
+      console.log(`Product lookup result:`, product ? `Found: ${product.name}` : 'Not found');
+
       if (!product) {
-        console.log(`Product not found: ${item.product} for item: ${item.name}`);
+        console.log(`Product not found: ${productId} for item: ${item.name}`);
         return res.status(404).json({ message: `Product ${item.name} not found` });
       }
       console.log(`Product found: ${product.name} with price: ${product.price}`);
@@ -75,9 +92,15 @@ router.post('/', async (req, res) => {
       }
     }
 
+    // Normalize order items to ensure consistent product field
+    const normalizedOrderItems = orderItems.map(item => ({
+      ...item,
+      product: item.productId || item.product // Ensure product field is set
+    }));
+
     // Create order data
     const orderData = {
-      orderItems,
+      orderItems: normalizedOrderItems,
       shippingAddress,
       paymentMethod,
       itemsPrice,
@@ -101,9 +124,10 @@ router.post('/', async (req, res) => {
     const createdOrder = await order.save();
 
     // Update product quantities
-    for (let item of orderItems) {
-      const product = await Product.findById(item.product);
-      if (product.trackQuantity) {
+    for (let item of normalizedOrderItems) {
+      const productId = item.productId || item.product;
+      const product = await Product.findById(productId);
+      if (product && product.trackQuantity) {
         product.quantity -= item.quantity;
         await product.save();
       }

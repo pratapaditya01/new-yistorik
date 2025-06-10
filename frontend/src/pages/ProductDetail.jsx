@@ -196,23 +196,17 @@ const ProductDetail = () => {
       return;
     }
 
-    const cartItem = {
-      id: product._id,
-      product: product,
-      quantity: quantity,
-      price: product.price,
-      selectedVariants: []
-    };
-
-    // Add selected variants
+    // Prepare selected variants
+    const selectedVariants = [];
     if (selectedColor) {
-      cartItem.selectedVariants.push({ name: 'Color', value: selectedColor });
+      selectedVariants.push({ name: 'Color', value: selectedColor });
     }
     if (selectedSize) {
-      cartItem.selectedVariants.push({ name: 'Size', value: selectedSize });
+      selectedVariants.push({ name: 'Size', value: selectedSize });
     }
 
-    addToCart(cartItem, quantity);
+    // Add to cart with product object, quantity, and variants
+    addToCart(product, quantity, selectedVariants);
   };
 
   const renderStars = (rating) => {
