@@ -16,6 +16,7 @@ import {
   PhotoIcon,
   XMarkIcon,
 } from '@heroicons/react/24/outline';
+import SizeManagement from '../../components/admin/SizeManagement';
 
 const Products = () => {
   const [products, setProducts] = useState([]);
@@ -352,6 +353,14 @@ const ProductModal = ({ type, product, categories, onClose, onSave }) => {
     hsnCode: '',
     gstInclusive: false,
     taxable: true,
+    // Size fields
+    sizes: [],
+    sizeChart: {
+      enabled: false,
+      image: '',
+      description: '',
+      measurements: []
+    },
   });
   const [loading, setLoading] = useState(false);
   const [gstError, setGstError] = useState('');
@@ -379,6 +388,14 @@ const ProductModal = ({ type, product, categories, onClose, onSave }) => {
         hsnCode: product.hsnCode || '',
         gstInclusive: product.gstInclusive || false,
         taxable: product.taxable !== undefined ? product.taxable : true,
+        // Size fields
+        sizes: product.sizes || [],
+        sizeChart: product.sizeChart || {
+          enabled: false,
+          image: '',
+          description: '',
+          measurements: []
+        },
       });
     }
   }, [product, type]);
@@ -434,6 +451,9 @@ const ProductModal = ({ type, product, categories, onClose, onSave }) => {
         hsnCode: formData.hsnCode,
         gstInclusive: formData.gstInclusive,
         taxable: formData.taxable,
+        // Size fields
+        sizes: formData.sizes,
+        sizeChart: formData.sizeChart,
       };
 
       if (type === 'create') {
@@ -849,6 +869,17 @@ const ProductModal = ({ type, product, categories, onClose, onSave }) => {
               </div>
             </div>
           )}
+
+          {/* Size Management */}
+          <div className="border-t pt-6">
+            <SizeManagement
+              sizes={formData.sizes}
+              setSizes={(sizes) => setFormData(prev => ({ ...prev, sizes }))}
+              sizeChart={formData.sizeChart}
+              setSizeChart={(sizeChart) => setFormData(prev => ({ ...prev, sizeChart }))}
+              disabled={isReadOnly}
+            />
+          </div>
 
           {/* Action Buttons */}
           <div className="flex justify-end space-x-3 pt-4">

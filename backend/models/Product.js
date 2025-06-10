@@ -109,6 +109,55 @@ const productSchema = new mongoose.Schema({
     name: { type: String, required: true }, // e.g., "Size", "Color"
     options: [{ type: String, required: true }] // e.g., ["S", "M", "L"] or ["Red", "Blue"]
   }],
+
+  // Available sizes with detailed information
+  sizes: [{
+    name: {
+      type: String,
+      required: true // e.g., "S", "M", "L", "XL", "XXL"
+    },
+    label: {
+      type: String,
+      required: true // e.g., "Small", "Medium", "Large"
+    },
+    measurements: {
+      chest: String, // e.g., "36-38 inches"
+      waist: String,
+      length: String,
+      sleeve: String,
+      shoulder: String
+    },
+    stock: {
+      type: Number,
+      default: 0
+    },
+    isAvailable: {
+      type: Boolean,
+      default: true
+    },
+    sortOrder: {
+      type: Number,
+      default: 0
+    }
+  }],
+
+  // Size chart information
+  sizeChart: {
+    enabled: {
+      type: Boolean,
+      default: false
+    },
+    image: String, // URL to size chart image
+    description: String,
+    measurements: [{
+      size: String, // Size name
+      chest: String,
+      waist: String,
+      length: String,
+      sleeve: String,
+      shoulder: String
+    }]
+  },
   specifications: [{
     name: { type: String, required: true },
     value: { type: String, required: true }

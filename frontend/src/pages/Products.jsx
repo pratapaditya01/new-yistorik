@@ -422,7 +422,6 @@ const Products = () => {
                     </button>
                   </div>
                 )}
-              </>
             </LoadingWithError>
           </div>
         </div>
