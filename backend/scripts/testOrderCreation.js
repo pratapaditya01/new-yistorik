@@ -56,9 +56,9 @@ async function testOrderCreation() {
       },
       paymentMethod: 'cash_on_delivery',
       itemsPrice: testProduct.price,
-      taxPrice: testProduct.price * 0.18,
+      taxPrice: testProduct.price * (testProduct.gstRate || 0) / 100, // Use actual GST rate
       shippingPrice: testProduct.price > 499 ? 0 : 99,
-      totalPrice: testProduct.price + (testProduct.price * 0.18) + (testProduct.price > 499 ? 0 : 99),
+      totalPrice: testProduct.price + (testProduct.price * (testProduct.gstRate || 0) / 100) + (testProduct.price > 499 ? 0 : 99),
       guestInfo: {
         firstName: 'Test',
         lastName: 'User',

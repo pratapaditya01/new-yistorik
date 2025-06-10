@@ -10,6 +10,7 @@ import PaymentMethodDebug from '../components/debug/PaymentMethodDebug';
 import { debugGSTFlow } from '../utils/gstFlowDebug';
 import { debugSizeFlow } from '../utils/sizeFlowDebug';
 import { analytics } from '../utils/analytics';
+import { testOrderGST } from '../utils/testOrderGST';
 
 const Checkout = () => {
   const navigate = useNavigate();
@@ -81,11 +82,27 @@ const Checkout = () => {
     setLoading(true);
 
     try {
-      // Calculate prices
+      // Calculate prices with proper per-product GST
       const itemsPrice = getTotalPrice();
       const shippingPrice = itemsPrice > 499 ? 0 : 99; // Free shipping over ₹499, otherwise ₹99
-      const taxPrice = itemsPrice * 0.18; // 18% GST (Indian tax)
+
+      // Calculate GST based on individual product rates (CRITICAL FIX)
+      const taxPrice = cartItems.reduce((total, item) => {
+        const gstRate = item.product.gstRate || 0;
+        const itemTotal = item.price * item.quantity;
+        const gstAmount = item.product.gstInclusive
+          ? itemTotal - (itemTotal / (1 + gstRate / 100))
+          : itemTotal * (gstRate / 100);
+        return total + gstAmount;
+      }, 0);
+
       const totalPrice = itemsPrice + shippingPrice + taxPrice;
+
+      console.log('💰 CHECKOUT - GST Calculation Debug:');
+      console.log('Items price:', itemsPrice);
+      console.log('Shipping price:', shippingPrice);
+      console.log('Tax price (calculated from products):', taxPrice);
+      console.log('Total price:', totalPrice);
 
       console.log('Cart items before processing:', cartItems);
       console.log('Cart items structure check:', cartItems.map(item => ({

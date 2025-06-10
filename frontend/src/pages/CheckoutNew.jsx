@@ -47,10 +47,20 @@ const CheckoutNew = () => {
     });
   };
 
-  // Calculate totals
+  // Calculate totals with proper per-product GST
   const itemsPrice = getTotalPrice();
   const shippingPrice = itemsPrice > 499 ? 0 : 99;
-  const taxPrice = itemsPrice * 0.18;
+
+  // Calculate GST based on individual product rates (CRITICAL FIX)
+  const taxPrice = cartItems.reduce((total, item) => {
+    const gstRate = item.product.gstRate || 0;
+    const itemTotal = item.price * item.quantity;
+    const gstAmount = item.product.gstInclusive
+      ? itemTotal - (itemTotal / (1 + gstRate / 100))
+      : itemTotal * (gstRate / 100);
+    return total + gstAmount;
+  }, 0);
+
   const totalPrice = itemsPrice + shippingPrice + taxPrice;
 
   if (cartItems.length === 0) {
