@@ -1,5 +1,24 @@
 // Optimized Image utility functions with caching and lazy loading support
 
+// Generate a local placeholder image data URL
+const generateLocalPlaceholder = (width = 300, height = 300, text = 'No Image') => {
+  // Create a simple SVG placeholder that works offline
+  const svg = `
+    <svg width="${width}" height="${height}" xmlns="http://www.w3.org/2000/svg">
+      <rect width="100%" height="100%" fill="#f3f4f6"/>
+      <circle cx="50%" cy="40%" r="20" fill="#e5e7eb"/>
+      <path d="M${width*0.3} ${height*0.6} L${width*0.7} ${height*0.6} L${width*0.6} ${height*0.8} L${width*0.4} ${height*0.8} Z" fill="#e5e7eb"/>
+      <text x="50%" y="90%" font-family="Arial, sans-serif" font-size="12" fill="#9ca3af" text-anchor="middle">${text}</text>
+    </svg>
+  `;
+  return `data:image/svg+xml;base64,${btoa(svg)}`;
+};
+
+// Local placeholder images
+const PLACEHOLDER_IMAGE = generateLocalPlaceholder(300, 300, 'No Image');
+const PLACEHOLDER_PRODUCT = generateLocalPlaceholder(300, 300, 'Product Image');
+const PLACEHOLDER_ERROR = generateLocalPlaceholder(300, 300, 'Image Error');
+
 // Dynamic API URL configuration for images
 const getApiBaseUrl = () => {
   // Check if we're in development
@@ -33,7 +52,7 @@ const imageUrlCache = new Map();
  */
 export const getImageUrl = (imageUrl, options = {}) => {
   if (!imageUrl) {
-    return '/placeholder-image.jpg';
+    return PLACEHOLDER_IMAGE;
   }
 
   // Check cache first
@@ -92,7 +111,7 @@ export const getImageUrl = (imageUrl, options = {}) => {
 export const getMainImageUrl = (images) => {
   // Handle null, undefined, or empty arrays
   if (!images || !Array.isArray(images) || images.length === 0) {
-    return 'https://via.placeholder.com/300x300/f3f4f6/9ca3af?text=No+Image';
+    return PLACEHOLDER_PRODUCT;
   }
 
   try {
@@ -109,10 +128,10 @@ export const getMainImageUrl = (images) => {
     }
 
     // Fallback if no valid images found
-    return 'https://via.placeholder.com/300x300/f3f4f6/9ca3af?text=No+Image';
+    return PLACEHOLDER_PRODUCT;
   } catch (error) {
     console.warn('Error processing image URL:', error);
-    return 'https://via.placeholder.com/300x300/f3f4f6/9ca3af?text=Error';
+    return PLACEHOLDER_ERROR;
   }
 };
 
@@ -123,8 +142,27 @@ export const getMainImageUrl = (images) => {
  */
 export const getAllImageUrls = (images) => {
   if (!images || images.length === 0) {
-    return ['/placeholder-image.jpg'];
+    return [PLACEHOLDER_PRODUCT];
   }
-  
+
   return images.map(img => getImageUrl(img.url));
+};
+
+/**
+ * Get a placeholder image URL
+ * @param {string} type - Type of placeholder ('product', 'error', 'default')
+ * @param {number} width - Width of placeholder
+ * @param {number} height - Height of placeholder
+ * @param {string} text - Text to display
+ * @returns {string} - Placeholder image data URL
+ */
+export const getPlaceholderUrl = (type = 'default', width = 300, height = 300, text = 'No Image') => {
+  switch (type) {
+    case 'product':
+      return generateLocalPlaceholder(width, height, text || 'Product Image');
+    case 'error':
+      return generateLocalPlaceholder(width, height, text || 'Image Error');
+    default:
+      return generateLocalPlaceholder(width, height, text);
+  }
 };

@@ -8,6 +8,7 @@ import LoadingSpinner from '../components/ui/LoadingSpinner';
 import api from '../services/api';
 import { getMainImageUrl } from '../utils/imageUtils';
 import { formatPrice } from '../utils/currency';
+import ImageWithFallback from '../components/ui/ImageWithFallback';
 import {
   FunnelIcon,
   MagnifyingGlassIcon,
@@ -304,9 +305,11 @@ const Products = () => {
                     >
                       <Link to={`/products/${product.slug}`} className="block">
                         <div className="relative overflow-hidden">
-                          <img
+                          <ImageWithFallback
                             src={getMainImageUrl(product.images)}
                             alt={product.images[0]?.alt || product.name}
+                            fallbackType="product"
+                            placeholderText="Product Image"
                             className="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-300"
                           />
                           {product.comparePrice && (

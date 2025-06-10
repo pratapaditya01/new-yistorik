@@ -49,7 +49,7 @@ async function testGSTFeatures() {
       gstInclusive: false,
       taxable: true,
       images: [{
-        url: 'https://via.placeholder.com/400',
+        url: '/uploads/sample-product.jpg',
         alt: 'GST Test Product',
         isMain: true
       }]
@@ -99,7 +99,7 @@ async function testGSTFeatures() {
           gstInclusive: false,
           taxable: gstInfo.rate > 0,
           images: [{
-            url: 'https://via.placeholder.com/300',
+            url: '/uploads/sample-product.jpg',
             alt: gstInfo.name,
             isMain: true
           }]
