@@ -38,6 +38,7 @@ app.use('/api/auth/register', createRateLimit(60 * 60 * 1000, 3, 'Too many regis
 // Explicit CORS headers middleware (backup)
 app.use((req, res, next) => {
   const allowedOrigins = [
+    'http://localhost:3000',
     'http://localhost:5173',
     'http://localhost:5174',
     'https://localhost:5173',
@@ -74,6 +75,7 @@ app.use((req, res, next) => {
 // CORS configuration (primary)
 app.use(cors({
   origin: [
+    'http://localhost:3000',
     'http://localhost:5173',
     'http://localhost:5174',
     'https://localhost:5173',
@@ -125,8 +127,53 @@ app.use('/api/admin', require('./routes/admin'));
 app.use('/api/upload', require('./routes/upload'));
 
 // Health check endpoint
-app.get('/api/health', (req, res) => {
-  res.json({ status: 'OK', message: 'Server is running' });
+app.get('/api/health', async (req, res) => {
+  try {
+    // Check database connection
+    const dbStatus = mongoose.connection.readyState === 1 ? 'connected' : 'disconnected';
+
+    // Get basic stats
+    const stats = {
+      status: 'OK',
+      message: 'Server is running',
+      timestamp: new Date().toISOString(),
+      environment: process.env.NODE_ENV || 'development',
+      database: dbStatus,
+      uptime: process.uptime(),
+      memory: process.memoryUsage(),
+      version: process.version
+    };
+
+    // If database is connected, get collection counts
+    if (dbStatus === 'connected') {
+      try {
+        const collections = await mongoose.connection.db.listCollections().toArray();
+        stats.collections = collections.map(col => col.name);
+      } catch (dbError) {
+        stats.database = 'error';
+        stats.dbError = dbError.message;
+      }
+    }
+
+    res.json(stats);
+  } catch (error) {
+    res.status(500).json({
+      status: 'ERROR',
+      message: 'Health check failed',
+      error: error.message,
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// CORS test endpoint
+app.get('/api/cors-test', (req, res) => {
+  res.json({
+    message: 'CORS test successful',
+    origin: req.headers.origin,
+    userAgent: req.headers['user-agent'],
+    timestamp: new Date().toISOString()
+  });
 });
 
 // Error handling middleware

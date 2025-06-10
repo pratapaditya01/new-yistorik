@@ -34,7 +34,10 @@ const api = axios.create({
   timeout: 30000, // 30 seconds timeout
   headers: {
     'Content-Type': 'application/json',
+    'Accept': 'application/json',
+    'X-Requested-With': 'XMLHttpRequest',
   },
+  withCredentials: true, // Enable credentials for CORS
 });
 
 // Request interceptor with deduplication and auth token
@@ -75,7 +78,25 @@ api.interceptors.request.use(
   }
 );
 
-// Response interceptor with caching and error handling
+// Retry configuration
+const MAX_RETRIES = 3;
+const RETRY_DELAY = 1000; // 1 second
+
+// Function to check if error should be retried
+const shouldRetry = (error) => {
+  // Retry on network errors, 502, 503, 504 errors
+  return !error.response ||
+         error.response.status === 502 ||
+         error.response.status === 503 ||
+         error.response.status === 504 ||
+         error.code === 'ECONNABORTED' ||
+         error.code === 'ERR_NETWORK';
+};
+
+// Function to delay execution
+const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
+// Response interceptor with caching, error handling, and retry logic
 api.interceptors.response.use(
   (response) => {
     console.log('API response success:', response.status, response.config.url);
@@ -105,7 +126,9 @@ api.interceptors.response.use(
 
     return response.data;
   },
-  (error) => {
+  async (error) => {
+    const originalRequest = error.config;
+
     console.error('API response error:', error.response?.status, error.response?.data, error.config?.url);
 
     // Clean up pending requests on error
@@ -113,10 +136,25 @@ api.interceptors.response.use(
       pendingRequests.delete(error.config.metadata.requestKey);
     }
 
-    // Handle authentication errors
+    // Handle authentication errors (don't retry these)
     if (error.response?.status === 401) {
       localStorage.removeItem('token');
       window.location.href = '/login';
+      return Promise.reject(error);
+    }
+
+    // Retry logic for network errors and server errors
+    if (shouldRetry(error) && (!originalRequest._retryCount || originalRequest._retryCount < MAX_RETRIES)) {
+      originalRequest._retryCount = (originalRequest._retryCount || 0) + 1;
+
+      console.log(`Retrying request (attempt ${originalRequest._retryCount}/${MAX_RETRIES}):`, originalRequest.url);
+
+      // Wait before retrying (exponential backoff)
+      const delayTime = RETRY_DELAY * Math.pow(2, originalRequest._retryCount - 1);
+      await delay(delayTime);
+
+      // Retry the request
+      return api(originalRequest);
     }
 
     return Promise.reject(error);

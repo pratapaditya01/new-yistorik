@@ -9,6 +9,8 @@ import api from '../services/api';
 import { getMainImageUrl } from '../utils/imageUtils';
 import { formatPrice } from '../utils/currency';
 import ImageWithFallback from '../components/ui/ImageWithFallback';
+import { NetworkError, LoadingWithError } from '../components/ui/ErrorBoundary';
+import ServiceStatus from '../components/ServiceStatus';
 import {
   FunnelIcon,
   MagnifyingGlassIcon,
@@ -22,6 +24,7 @@ const Products = () => {
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [searchParams, setSearchParams] = useSearchParams();
   const { addToCart } = useCart();
 
@@ -53,6 +56,7 @@ const Products = () => {
   const fetchProducts = async () => {
     try {
       setLoading(true);
+      setError(null);
 
       // Prepare API parameters
       const params = {
@@ -93,8 +97,13 @@ const Products = () => {
       }
     } catch (error) {
       console.error('Error fetching products:', error);
-      toast.error('Failed to fetch products');
+      setError(error);
       setProducts([]);
+
+      // Only show toast for non-network errors to avoid spam
+      if (!error.message?.includes('502') && !error.message?.includes('Network')) {
+        toast.error('Failed to fetch products');
+      }
     } finally {
       setLoading(false);
     }
@@ -154,6 +163,9 @@ const Products = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      {/* Service Status Banner */}
+      <ServiceStatus />
+
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8">
@@ -286,13 +298,16 @@ const Products = () => {
               </div>
             </div>
 
-            {/* Loading State */}
-            {loading ? (
-              <div className="flex justify-center items-center py-12">
-                <LoadingSpinner size="lg" />
-              </div>
-            ) : (
-              <>
+            {/* Loading and Error State */}
+            <LoadingWithError
+              loading={loading}
+              error={error}
+              onRetry={() => {
+                setError(null);
+                fetchProducts();
+              }}
+              loadingText="Loading products..."
+            >
                 {/* Products Grid */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                   {products.map((product, index) => (
@@ -399,7 +414,7 @@ const Products = () => {
                   </div>
                 )}
               </>
-            )}
+            </LoadingWithError>
           </div>
         </div>
       </div>
