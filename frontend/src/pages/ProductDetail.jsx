@@ -17,6 +17,8 @@ import {
   ChevronRightIcon,
 } from '@heroicons/react/24/outline';
 import { HeartIcon as HeartSolidIcon } from '@heroicons/react/24/solid';
+import { debugGSTFlow } from '../utils/gstFlowDebug';
+import { debugSizeFlow } from '../utils/sizeFlowDebug';
 
 const ProductDetail = () => {
   const { slug } = useParams();
@@ -132,6 +134,14 @@ const ProductDetail = () => {
 
       if (response) {
         setProduct(response);
+
+        // Debug GST data from API
+        console.log('📦 PRODUCT DETAIL - Product fetched:', response);
+        debugGSTFlow.debugProductAPI(response);
+
+        // Debug size data from API
+        debugSizeFlow.debugProductSizes(response);
+
         // Set default variants if available
         // Set default variants if available
         if (response.variants && response.variants.length > 0) {
@@ -205,8 +215,16 @@ const ProductDetail = () => {
       selectedVariants.push({ name: 'Size', value: selectedSize });
     }
 
-    // Add to cart with product object, quantity, and variants
-    addToCart(product, quantity, selectedVariants);
+    // Debug add to cart with size
+    console.log('🛒 ADD TO CART - Adding product with variants:');
+    const addToCartValid = debugSizeFlow.debugAddToCartWithSize(product, selectedSize, quantity, selectedVariants);
+
+    if (addToCartValid) {
+      // Add to cart with product object, quantity, and variants
+      addToCart(product, quantity, selectedVariants);
+    } else {
+      console.error('❌ Add to cart failed validation');
+    }
   };
 
   const renderStars = (rating) => {
@@ -436,7 +454,11 @@ const ProductDetail = () => {
                   {product.variants.find(v => v.name.toLowerCase() === 'size').options.map((size) => (
                     <button
                       key={size}
-                      onClick={() => setSelectedSize(size)}
+                      onClick={() => {
+                        setSelectedSize(size);
+                        console.log('👤 SIZE SELECTION - Size selected:', size);
+                        debugSizeFlow.debugSizeSelection(size, product.sizes, product);
+                      }}
                       className={`py-2 px-3 border rounded-md text-sm font-medium transition-all ${
                         selectedSize === size
                           ? 'border-primary-500 bg-primary-50 text-primary-700'

@@ -1,5 +1,7 @@
 import React, { createContext, useContext, useReducer, useEffect } from 'react';
 import toast from 'react-hot-toast';
+import { debugGSTFlow } from '../utils/gstFlowDebug';
+import { debugSizeFlow } from '../utils/sizeFlowDebug';
 
 const CartContext = createContext();
 
@@ -131,6 +133,21 @@ export const CartProvider = ({ children }) => {
   }, [state.items, state.totalItems, state.totalPrice]);
 
   const addToCart = (product, quantity = 1, selectedVariants = []) => {
+    console.log('🛒 CART CONTEXT - Adding to cart:', {
+      product: product.name,
+      quantity,
+      selectedVariants,
+      productSizes: product.sizes?.length || 0
+    });
+
+    // Debug size information
+    const sizeVariant = selectedVariants.find(v => v.name?.toLowerCase() === 'size');
+    if (sizeVariant) {
+      console.log('📏 Size variant being added:', sizeVariant.value);
+    } else if (product.sizes && product.sizes.length > 0) {
+      console.warn('⚠️ Product has sizes but no size variant selected!');
+    }
+
     const cartItem = {
       id: `${product._id}-${JSON.stringify(selectedVariants)}`,
       product,
@@ -141,6 +158,12 @@ export const CartProvider = ({ children }) => {
 
     dispatch({ type: 'ADD_TO_CART', payload: cartItem });
     toast.success(`${product.name} added to cart!`);
+
+    // Debug cart after addition
+    setTimeout(() => {
+      console.log('🛒 CART CONTEXT - Cart updated, debugging sizes...');
+      debugSizeFlow.debugCartSizes([...state.items, cartItem]);
+    }, 100);
   };
 
   const removeFromCart = (itemId) => {
@@ -183,6 +206,11 @@ export const CartProvider = ({ children }) => {
   };
 
   const getTotalPrice = () => {
+    // Debug cart GST calculation
+    if (state.items.length > 0) {
+      console.log('🛒 CART - Calculating total price for items:', state.items.length);
+      debugGSTFlow.debugCartGST(state.items);
+    }
     return state.totalPrice;
   };
 

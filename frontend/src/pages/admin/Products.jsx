@@ -17,6 +17,8 @@ import {
   XMarkIcon,
 } from '@heroicons/react/24/outline';
 import SizeManagement from '../../components/admin/SizeManagement';
+import { debugGSTFlow } from '../../utils/gstFlowDebug';
+import { debugSizeFlow } from '../../utils/sizeFlowDebug';
 
 const Products = () => {
   const [products, setProducts] = useState([]);
@@ -437,6 +439,17 @@ const ProductModal = ({ type, product, categories, onClose, onSave }) => {
     setLoading(true);
 
     try {
+      // Debug GST data before processing
+      console.log('🔧 ADMIN FORM - Before processing:', {
+        gstRate: formData.gstRate,
+        gstRateType: typeof formData.gstRate,
+        gstType: formData.gstType,
+        gstInclusive: formData.gstInclusive,
+        taxable: formData.taxable
+      });
+
+      const processedGSTRate = debugGSTFlow.debugAdminForm(formData);
+
       // Prepare form data for API
       const productData = {
         ...formData,
@@ -457,6 +470,19 @@ const ProductModal = ({ type, product, categories, onClose, onSave }) => {
         sizes: formData.sizes,
         sizeChart: formData.sizeChart,
       };
+
+      console.log('🚀 ADMIN FORM - Final product data being sent:', {
+        name: productData.name,
+        gstRate: productData.gstRate,
+        gstRateType: typeof productData.gstRate,
+        gstType: productData.gstType,
+        gstInclusive: productData.gstInclusive,
+        taxable: productData.taxable
+      });
+
+      // Debug size data
+      console.log('📏 ADMIN FORM - Size data being sent:');
+      debugSizeFlow.debugAdminSizes(productData);
 
       if (type === 'create') {
         await adminService.createProduct(productData);

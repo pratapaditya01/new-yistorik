@@ -7,6 +7,8 @@ import { orderService } from '../services/orderService';
 import { formatPrice } from '../utils/currency';
 import RazorpayPayment from '../components/payment/RazorpayPayment';
 import PaymentMethodDebug from '../components/debug/PaymentMethodDebug';
+import { debugGSTFlow } from '../utils/gstFlowDebug';
+import { debugSizeFlow } from '../utils/sizeFlowDebug';
 
 const Checkout = () => {
   const navigate = useNavigate();
@@ -104,6 +106,10 @@ const Checkout = () => {
         hasProductId: !!item.productId
       })));
 
+      // Debug size information in order items
+      console.log('📏 CHECKOUT - Size information in order items:');
+      debugSizeFlow.debugCartSizes(cartItems);
+
       // Prepare shipping address
       const fullShippingAddress = {
         fullName: isAuthenticated ? user.name : `${guestInfo.firstName} ${guestInfo.lastName}`,
@@ -138,6 +144,10 @@ const Checkout = () => {
       }
 
       console.log('Submitting order:', orderData);
+
+      // Debug final order data with sizes
+      console.log('💳 CHECKOUT - Final order data with sizes:');
+      debugSizeFlow.debugCheckoutSizes(orderData);
 
       // Create order in database
       const response = await orderService.createOrder(orderData);
@@ -434,21 +444,41 @@ const Checkout = () => {
               {paymentMethod === 'razorpay' && (
                 <div className="mt-6">
                   <RazorpayPayment
-                    orderData={{
-                      amount: getTotalPrice() + (getTotalPrice() > 499 ? 0 : 99) + (getTotalPrice() * 0.18),
-                      itemsPrice: getTotalPrice(),
-                      shippingPrice: getTotalPrice() > 499 ? 0 : 99,
-                      taxPrice: getTotalPrice() * 0.18,
-                      items: cartItems.map(item => ({
-                        productId: item.product._id,
-                        name: item.product.name,
-                        image: item.product.images?.[0]?.url || '/placeholder.jpg',
-                        price: item.price,
-                        quantity: item.quantity,
-                        selectedVariants: item.selectedVariants || []
-                      })),
-                      shippingAddress: shippingAddress
-                    }}
+                    orderData={(() => {
+                      // Calculate proper GST based on individual products
+                      const subtotal = getTotalPrice();
+                      const shipping = subtotal > 499 ? 0 : 99;
+                      const totalGST = cartItems.reduce((total, item) => {
+                        const gstRate = item.product.gstRate || 0;
+                        const itemTotal = item.price * item.quantity;
+                        const gstAmount = item.product.gstInclusive
+                          ? itemTotal - (itemTotal / (1 + gstRate / 100))
+                          : itemTotal * (gstRate / 100);
+                        return total + gstAmount;
+                      }, 0);
+
+                      const orderData = {
+                        amount: subtotal + shipping + totalGST,
+                        itemsPrice: subtotal,
+                        shippingPrice: shipping,
+                        taxPrice: totalGST,
+                        items: cartItems.map(item => ({
+                          productId: item.product._id,
+                          name: item.product.name,
+                          image: item.product.images?.[0]?.url || '/placeholder.jpg',
+                          price: item.price,
+                          quantity: item.quantity,
+                          selectedVariants: item.selectedVariants || []
+                        })),
+                        shippingAddress: shippingAddress
+                      };
+
+                      // Debug the order data
+                      console.log('💳 CHECKOUT - Razorpay order data:');
+                      debugGSTFlow.debugRazorpayData(orderData);
+
+                      return orderData;
+                    })()}
                     onSuccess={() => {
                       toast.success('Payment successful!');
                       // Clear cart and navigate will be handled by the component
