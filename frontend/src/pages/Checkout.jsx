@@ -78,16 +78,31 @@ const Checkout = () => {
       const totalPrice = itemsPrice + shippingPrice + taxPrice;
 
       console.log('Cart items before processing:', cartItems);
+      console.log('Cart items structure check:', cartItems.map(item => ({
+        id: item.id,
+        productId: item.product?._id,
+        productName: item.product?.name,
+        hasProduct: !!item.product
+      })));
 
       // Prepare order items for backend
       const orderItems = cartItems.map(item => ({
-        product: item.product._id,
+        productId: item.product._id,  // Use productId to match backend expectation
+        product: item.product._id,    // Keep product for backward compatibility
         name: item.product.name,
         image: item.product.images?.[0]?.url || '/placeholder.jpg',
         price: item.price,
         quantity: item.quantity,
         selectedVariants: item.selectedVariants || []
       }));
+
+      console.log('Order items after mapping:', orderItems);
+      console.log('Order items productId check:', orderItems.map(item => ({
+        name: item.name,
+        productId: item.productId,
+        product: item.product,
+        hasProductId: !!item.productId
+      })));
 
       // Prepare shipping address
       const fullShippingAddress = {
