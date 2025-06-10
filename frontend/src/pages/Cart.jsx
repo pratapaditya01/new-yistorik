@@ -230,10 +230,13 @@ const Cart = () => {
                   <span>{shipping === 0 ? 'Free' : formatPrice(shipping)}</span>
                 </div>
 
-                <div className="flex justify-between text-gray-600">
-                  <span>GST (18%)</span>
-                  <span>{formatPrice(tax)}</span>
-                </div>
+                {/* Only show GST if there's tax to be charged */}
+                {tax > 0 && (
+                  <div className="flex justify-between text-gray-600">
+                    <span>GST (18%)</span>
+                    <span>{formatPrice(tax)}</span>
+                  </div>
+                )}
 
                 {discount > 0 && (
                   <div className="flex justify-between text-green-600">

@@ -5,6 +5,7 @@
 // Standard GST rates in India
 export const GST_RATES = {
   EXEMPT: 0,
+  ZERO_RATED: 0, // Explicitly 0% GST
   ESSENTIAL: 5,
   STANDARD_LOW: 12,
   STANDARD: 18,
@@ -112,31 +113,45 @@ export const validateGSTRate = (rate) => {
  */
 export const calculateGST = (basePrice, gstRate, gstInclusive = false) => {
   const price = parseFloat(basePrice) || 0;
-  const rate = parseFloat(gstRate) || 0;
-  
+  const rate = parseFloat(gstRate);
+
+  // Handle 0% GST case (including null, undefined, or 0)
+  if (rate === 0 || rate === null || rate === undefined || isNaN(rate)) {
+    return {
+      basePrice: price,
+      gstAmount: 0,
+      totalPrice: price,
+      gstRate: 0,
+      gstInclusive: gstInclusive,
+      isGSTExempt: true
+    };
+  }
+
   if (gstInclusive) {
     // Price includes GST - calculate base price and GST amount
     const gstAmount = (price * rate) / (100 + rate);
     const basePriceExGST = price - gstAmount;
-    
+
     return {
       basePrice: basePriceExGST,
       gstAmount: gstAmount,
       totalPrice: price,
       gstRate: rate,
-      gstInclusive: true
+      gstInclusive: true,
+      isGSTExempt: false
     };
   } else {
     // Price excludes GST - calculate GST amount and total price
     const gstAmount = (price * rate) / 100;
     const totalPrice = price + gstAmount;
-    
+
     return {
       basePrice: price,
       gstAmount: gstAmount,
       totalPrice: totalPrice,
       gstRate: rate,
-      gstInclusive: false
+      gstInclusive: false,
+      isGSTExempt: false
     };
   }
 };
@@ -181,4 +196,29 @@ export const getCommonGSTRates = () => [
 export const isStandardGSTRate = (rate) => {
   const standardRates = [0, 3, 5, 12, 18, 28];
   return standardRates.includes(parseFloat(rate));
+};
+
+/**
+ * Check if GST should be displayed for a product
+ * @param {number} gstRate - GST rate of the product
+ * @returns {boolean} - Whether to show GST information
+ */
+export const shouldDisplayGST = (gstRate) => {
+  const rate = parseFloat(gstRate);
+  return !isNaN(rate) && rate > 0;
+};
+
+/**
+ * Get GST display text for a product
+ * @param {number} gstRate - GST rate of the product
+ * @returns {string} - Display text for GST
+ */
+export const getGSTDisplayText = (gstRate) => {
+  const rate = parseFloat(gstRate);
+
+  if (isNaN(rate) || rate === 0) {
+    return 'GST Exempt';
+  }
+
+  return `GST: ${rate}%`;
 };

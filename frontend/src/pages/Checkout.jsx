@@ -172,8 +172,8 @@ const Checkout = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between mb-8">
           <h1 className="text-3xl font-bold text-gray-900">Checkout</h1>
-          <div className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded">
-            v2.0 - Razorpay Enabled ✅
+          <div className="text-xs text-red-600 bg-red-100 px-3 py-1 rounded-full font-bold">
+            🚨 FIXED v5.0 - OLD PAYMENT METHODS REMOVED
           </div>
         </div>
 
@@ -343,6 +343,18 @@ const Checkout = () => {
 
               {/* Debug Component */}
               <PaymentMethodDebug currentMethod={paymentMethod} />
+
+              {/* CLEAR DEBUG MESSAGE */}
+              <div className="bg-red-100 border-2 border-red-500 rounded-lg p-4 mb-4">
+                <h3 className="text-lg font-bold text-red-800 mb-2">
+                  🚨 DEBUGGING: Current Payment Methods Being Rendered
+                </h3>
+                <div className="text-sm text-red-700">
+                  <p><strong>If you see old payment methods below, it's a browser cache issue!</strong></p>
+                  <p><strong>Expected:</strong> Only "Razorpay" and "Cash on Delivery"</p>
+                  <p><strong>Current Time:</strong> {new Date().toLocaleString()}</p>
+                </div>
+              </div>
               <div className="space-y-4">
                 {/* Razorpay Online Payment */}
                 <div className={`border rounded-lg p-4 cursor-pointer transition-colors ${
@@ -474,14 +486,44 @@ const Checkout = () => {
                 <span className="text-gray-600">Shipping</span>
                 <span className="text-gray-900">{getTotalPrice() > 499 ? 'Free' : formatPrice(99)}</span>
               </div>
-              <div className="flex justify-between text-sm">
-                <span className="text-gray-600">GST (18%)</span>
-                <span className="text-gray-900">{formatPrice(getTotalPrice() * 0.18)}</span>
-              </div>
+              {/* Calculate GST based on individual product rates */}
+              {(() => {
+                const totalGST = cartItems.reduce((total, item) => {
+                  const gstRate = item.product.gstRate || 0;
+                  const itemTotal = item.price * item.quantity;
+                  const gstAmount = item.product.gstInclusive
+                    ? itemTotal - (itemTotal / (1 + gstRate / 100))
+                    : itemTotal * (gstRate / 100);
+                  return total + gstAmount;
+                }, 0);
+
+                // Only show GST line if there's GST to be charged
+                if (totalGST > 0) {
+                  return (
+                    <div className="flex justify-between text-sm">
+                      <span className="text-gray-600">GST</span>
+                      <span className="text-gray-900">{formatPrice(totalGST)}</span>
+                    </div>
+                  );
+                }
+                return null;
+              })()}
               <div className="border-t pt-2 flex justify-between text-lg font-semibold">
                 <span className="text-gray-900">Total</span>
                 <span className="text-gray-900">
-                  {formatPrice(getTotalPrice() + (getTotalPrice() > 499 ? 0 : 99) + (getTotalPrice() * 0.18))}
+                  {(() => {
+                    const subtotal = getTotalPrice();
+                    const shipping = subtotal > 499 ? 0 : 99;
+                    const totalGST = cartItems.reduce((total, item) => {
+                      const gstRate = item.product.gstRate || 0;
+                      const itemTotal = item.price * item.quantity;
+                      const gstAmount = item.product.gstInclusive
+                        ? itemTotal - (itemTotal / (1 + gstRate / 100))
+                        : itemTotal * (gstRate / 100);
+                      return total + gstAmount;
+                    }, 0);
+                    return formatPrice(subtotal + shipping + totalGST);
+                  })()}
                 </span>
               </div>
             </div>

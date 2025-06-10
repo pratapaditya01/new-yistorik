@@ -652,7 +652,7 @@ const ProductModal = ({ type, product, categories, onClose, onSave }) => {
                     max="28"
                     step="0.01"
                     disabled={isReadOnly}
-                    placeholder="Enter GST rate"
+                    placeholder="Enter GST rate (0 for exempt products)"
                     className="w-full px-3 py-2 pr-8 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary-500 focus:border-transparent disabled:bg-gray-100"
                   />
                   <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
@@ -678,8 +678,17 @@ const ProductModal = ({ type, product, categories, onClose, onSave }) => {
                   ))}
                 </div>
                 <p className="text-xs text-gray-500 mt-1">
-                  Enter custom GST rate or use quick buttons for common rates
+                  Enter custom GST rate or use quick buttons. Use 0% for GST exempt products.
                 </p>
+
+                {/* 0% GST Notice */}
+                {formData.gstRate == 0 && (
+                  <div className="mt-2 p-2 bg-green-50 border border-green-200 rounded-md">
+                    <p className="text-sm text-green-700">
+                      ✅ <strong>GST Exempt Product</strong> - No GST will be charged or displayed on the product page
+                    </p>
+                  </div>
+                )}
 
                 {/* GST Error Message */}
                 {gstError && (
@@ -710,9 +719,24 @@ const ProductModal = ({ type, product, categories, onClose, onSave }) => {
                 })()}
 
                 {/* GST Calculation Preview */}
-                {formData.price && formData.gstRate && formData.taxable && (() => {
+                {formData.price && formData.taxable && (() => {
                   const calculation = calculateGST(formData.price, formData.gstRate, formData.gstInclusive);
                   const formatted = formatGSTCalculation(calculation);
+
+                  // Show different preview for 0% GST
+                  if (formData.gstRate == 0) {
+                    return (
+                      <div className="mt-2 p-2 bg-green-50 rounded-md border border-green-200">
+                        <p className="text-xs font-medium text-green-800 mb-1">GST Calculation Preview:</p>
+                        <div className="text-xs text-green-700 space-y-0.5">
+                          <div>Product Price: {formatted.basePrice}</div>
+                          <div>GST Amount: ₹0.00 (Exempt)</div>
+                          <div className="font-medium">Final Price: {formatted.totalPrice}</div>
+                          <div className="text-green-600 italic">This product is GST exempt - no tax will be charged</div>
+                        </div>
+                      </div>
+                    );
+                  }
 
                   return (
                     <div className="mt-2 p-2 bg-blue-50 rounded-md border border-blue-200">

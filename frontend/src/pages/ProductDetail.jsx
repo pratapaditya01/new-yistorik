@@ -360,15 +360,36 @@ const ProductDetail = () => {
             </div>
 
             {/* Price */}
-            <div className="flex items-center space-x-4">
-              <span className="text-3xl font-bold text-gray-900">{formatPrice(product.price)}</span>
-              {product.comparePrice && (
-                <>
-                  <span className="text-xl text-gray-500 line-through">{formatPrice(product.comparePrice)}</span>
-                  <span className="bg-red-100 text-red-800 px-2 py-1 rounded text-sm font-medium">
-                    Save {formatPrice(product.comparePrice - product.price)}
-                  </span>
-                </>
+            <div className="space-y-2">
+              <div className="flex items-center space-x-4">
+                <span className="text-3xl font-bold text-gray-900">{formatPrice(product.price)}</span>
+                {product.comparePrice && (
+                  <>
+                    <span className="text-xl text-gray-500 line-through">{formatPrice(product.comparePrice)}</span>
+                    <span className="bg-red-100 text-red-800 px-2 py-1 rounded text-sm font-medium">
+                      Save {formatPrice(product.comparePrice - product.price)}
+                    </span>
+                  </>
+                )}
+              </div>
+
+              {/* GST Information - Only show if GST > 0% */}
+              {product.gstRate > 0 && (
+                <div className="text-sm text-gray-600">
+                  <span>GST: {product.gstRate}% </span>
+                  {product.gstInclusive ? (
+                    <span className="text-green-600">(Inclusive)</span>
+                  ) : (
+                    <span className="text-orange-600">(Exclusive - ₹{((product.price * product.gstRate) / 100).toFixed(2)} additional)</span>
+                  )}
+                </div>
+              )}
+
+              {/* GST Exempt Notice */}
+              {product.gstRate === 0 && (
+                <div className="text-sm text-green-600 font-medium">
+                  ✅ GST Exempt Product
+                </div>
               )}
             </div>
 
