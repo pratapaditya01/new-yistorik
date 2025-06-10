@@ -5,6 +5,7 @@ import { productService } from '../services/productService';
 import LoadingSpinner from '../components/ui/LoadingSpinner';
 import { ArrowRightIcon } from '@heroicons/react/24/outline';
 import { getMainImageUrl } from '../utils/imageUtils';
+import { formatPrice } from '../utils/currency';
 
 const Home = () => {
   const [featuredProducts, setFeaturedProducts] = useState([]);
@@ -182,11 +183,11 @@ const Home = () => {
                         </p>
                         <div className="flex items-center justify-between">
                           <span className="text-xl font-bold text-primary-600">
-                            ${product.price}
+                            {formatPrice(product.price)}
                           </span>
                           {product.comparePrice && (
                             <span className="text-sm text-gray-500 line-through">
-                              ${product.comparePrice}
+                              {formatPrice(product.comparePrice)}
                             </span>
                           )}
                         </div>

@@ -152,6 +152,33 @@ const productSchema = new mongoose.Schema({
   sortOrder: {
     type: Number,
     default: 0
+  },
+
+  // GST and Tax Information (India)
+  gstRate: {
+    type: Number,
+    default: 18, // Default 18% GST
+    min: [0, 'GST rate cannot be negative'],
+    max: [28, 'GST rate cannot exceed 28%']
+  },
+  gstType: {
+    type: String,
+    enum: ['CGST_SGST', 'IGST', 'EXEMPT', 'ZERO_RATED'],
+    default: 'CGST_SGST'
+  },
+  hsnCode: {
+    type: String,
+    trim: true,
+    maxlength: [10, 'HSN code cannot exceed 10 characters'],
+    default: ''
+  },
+  gstInclusive: {
+    type: Boolean,
+    default: false // Whether price includes GST or not
+  },
+  taxable: {
+    type: Boolean,
+    default: true
   }
 }, {
   timestamps: true

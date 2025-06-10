@@ -7,6 +7,7 @@ import { useCart } from '../context/CartContext';
 import LoadingSpinner from '../components/ui/LoadingSpinner';
 import api from '../services/api';
 import { getMainImageUrl } from '../utils/imageUtils';
+import { formatPrice } from '../utils/currency';
 import {
   FunnelIcon,
   MagnifyingGlassIcon,
@@ -346,11 +347,11 @@ const Products = () => {
                         <div className="flex items-center justify-between mb-4">
                           <div className="flex items-center space-x-2">
                             <span className="text-xl font-bold text-gray-900">
-                              ${product.price}
+                              {formatPrice(product.price)}
                             </span>
                             {product.comparePrice && (
                               <span className="text-sm text-gray-500 line-through">
-                                ${product.comparePrice}
+                                {formatPrice(product.comparePrice)}
                               </span>
                             )}
                           </div>

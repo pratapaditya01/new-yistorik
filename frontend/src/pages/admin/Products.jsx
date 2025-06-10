@@ -4,6 +4,7 @@ import { toast } from 'react-hot-toast';
 import { adminService } from '../../services/adminService';
 import ImageUpload from '../../components/admin/ImageUpload';
 import { getMainImageUrl } from '../../utils/imageUtils';
+import { formatPrice } from '../../utils/currency';
 import {
   PlusIcon,
   PencilIcon,
@@ -260,10 +261,10 @@ const Products = () => {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="text-sm text-gray-900">
-                          ${product.price}
+                          {formatPrice(product.price)}
                           {product.comparePrice && (
                             <span className="ml-2 text-xs text-gray-500 line-through">
-                              ${product.comparePrice}
+                              {formatPrice(product.comparePrice)}
                             </span>
                           )}
                         </div>
@@ -344,6 +345,12 @@ const ProductModal = ({ type, product, categories, onClose, onSave }) => {
     inStock: true,
     featured: false,
     images: [],
+    // GST fields
+    gstRate: 18,
+    gstType: 'CGST_SGST',
+    hsnCode: '',
+    gstInclusive: false,
+    taxable: true,
   });
   const [loading, setLoading] = useState(false);
 
@@ -361,6 +368,12 @@ const ProductModal = ({ type, product, categories, onClose, onSave }) => {
         inStock: product.isActive !== undefined ? product.isActive : (product.inStock || true),
         featured: product.isFeatured !== undefined ? product.isFeatured : (product.featured || false),
         images: product.images || [],
+        // GST fields
+        gstRate: product.gstRate || 18,
+        gstType: product.gstType || 'CGST_SGST',
+        hsnCode: product.hsnCode || '',
+        gstInclusive: product.gstInclusive || false,
+        taxable: product.taxable !== undefined ? product.taxable : true,
       });
     }
   }, [product, type]);
@@ -393,6 +406,12 @@ const ProductModal = ({ type, product, categories, onClose, onSave }) => {
         quantity: parseInt(formData.stockQuantity) || 0,
         isActive: formData.inStock,
         isFeatured: formData.featured,
+        // GST fields
+        gstRate: parseFloat(formData.gstRate) || 18,
+        gstType: formData.gstType,
+        hsnCode: formData.hsnCode,
+        gstInclusive: formData.gstInclusive,
+        taxable: formData.taxable,
       };
 
       if (type === 'create') {
@@ -562,6 +581,97 @@ const ProductModal = ({ type, product, categories, onClose, onSave }) => {
                   className="rounded border-gray-300 text-primary-600 focus:ring-primary-500"
                 />
                 <label className="ml-2 text-sm text-gray-700">Featured Product</label>
+              </div>
+            </div>
+          </div>
+
+          {/* GST Information Section */}
+          <div className="border-t pt-4">
+            <h4 className="text-md font-medium text-gray-900 mb-4">GST & Tax Information</h4>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {/* GST Rate */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  GST Rate (%)
+                </label>
+                <select
+                  name="gstRate"
+                  value={formData.gstRate}
+                  onChange={handleInputChange}
+                  disabled={isReadOnly}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary-500 focus:border-transparent disabled:bg-gray-100"
+                >
+                  <option value="0">0% (Exempt)</option>
+                  <option value="5">5%</option>
+                  <option value="12">12%</option>
+                  <option value="18">18%</option>
+                  <option value="28">28%</option>
+                </select>
+              </div>
+
+              {/* GST Type */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  GST Type
+                </label>
+                <select
+                  name="gstType"
+                  value={formData.gstType}
+                  onChange={handleInputChange}
+                  disabled={isReadOnly}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary-500 focus:border-transparent disabled:bg-gray-100"
+                >
+                  <option value="CGST_SGST">CGST + SGST (Intra-state)</option>
+                  <option value="IGST">IGST (Inter-state)</option>
+                  <option value="EXEMPT">Exempt</option>
+                  <option value="ZERO_RATED">Zero Rated</option>
+                </select>
+              </div>
+
+              {/* HSN Code */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  HSN Code
+                </label>
+                <input
+                  type="text"
+                  name="hsnCode"
+                  value={formData.hsnCode}
+                  onChange={handleInputChange}
+                  disabled={isReadOnly}
+                  placeholder="e.g., 6203"
+                  maxLength="10"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary-500 focus:border-transparent disabled:bg-gray-100"
+                />
+                <p className="text-xs text-gray-500 mt-1">
+                  Harmonized System of Nomenclature code for tax classification
+                </p>
+              </div>
+
+              {/* Tax Options */}
+              <div className="space-y-2">
+                <div className="flex items-center">
+                  <input
+                    type="checkbox"
+                    name="taxable"
+                    checked={formData.taxable}
+                    onChange={handleInputChange}
+                    disabled={isReadOnly}
+                    className="rounded border-gray-300 text-primary-600 focus:ring-primary-500"
+                  />
+                  <label className="ml-2 text-sm text-gray-700">Taxable Product</label>
+                </div>
+                <div className="flex items-center">
+                  <input
+                    type="checkbox"
+                    name="gstInclusive"
+                    checked={formData.gstInclusive}
+                    onChange={handleInputChange}
+                    disabled={isReadOnly}
+                    className="rounded border-gray-300 text-primary-600 focus:ring-primary-500"
+                  />
+                  <label className="ml-2 text-sm text-gray-700">Price includes GST</label>
+                </div>
               </div>
             </div>
           </div>

@@ -5,6 +5,7 @@ import { useCart } from '../context/CartContext';
 import { productService } from '../services/productService';
 import LoadingSpinner from '../components/ui/LoadingSpinner';
 import { getImageUrl } from '../utils/imageUtils';
+import { formatPrice, formatPriceRange } from '../utils/currency';
 import {
   StarIcon,
   HeartIcon,
@@ -366,12 +367,12 @@ const ProductDetail = () => {
 
             {/* Price */}
             <div className="flex items-center space-x-4">
-              <span className="text-3xl font-bold text-gray-900">${product.price}</span>
+              <span className="text-3xl font-bold text-gray-900">{formatPrice(product.price)}</span>
               {product.comparePrice && (
                 <>
-                  <span className="text-xl text-gray-500 line-through">${product.comparePrice}</span>
+                  <span className="text-xl text-gray-500 line-through">{formatPrice(product.comparePrice)}</span>
                   <span className="bg-red-100 text-red-800 px-2 py-1 rounded text-sm font-medium">
-                    Save ${(product.comparePrice - product.price).toFixed(2)}
+                    Save {formatPrice(product.comparePrice - product.price)}
                   </span>
                 </>
               )}

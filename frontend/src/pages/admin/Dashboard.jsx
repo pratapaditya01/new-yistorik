@@ -13,6 +13,7 @@ import {
   ArrowDownIcon,
   TruckIcon,
 } from '@heroicons/react/24/outline';
+import { formatPrice } from '../../utils/currency';
 
 const Dashboard = () => {
   const { user } = useAuth();
@@ -30,7 +31,7 @@ const Dashboard = () => {
 
   // Sample data - replace with actual API calls
   const sampleStats = {
-    totalRevenue: 45678.90,
+    totalRevenue: 3456789.50, // ₹34,56,789.50
     totalOrders: 1234,
     totalProducts: 156,
     totalUsers: 2890,
@@ -39,7 +40,7 @@ const Dashboard = () => {
         id: 'ORD-001',
         customer: 'John Doe',
         email: 'john@example.com',
-        total: 129.99,
+        total: 3899.75, // ₹3,899.75
         status: 'completed',
         date: '2024-01-15',
         items: 3,
@@ -48,7 +49,7 @@ const Dashboard = () => {
         id: 'ORD-002',
         customer: 'Jane Smith',
         email: 'jane@example.com',
-        total: 89.50,
+        total: 2675.50, // ₹2,675.50
         status: 'processing',
         date: '2024-01-15',
         items: 2,
@@ -57,7 +58,7 @@ const Dashboard = () => {
         id: 'ORD-003',
         customer: 'Mike Johnson',
         email: 'mike@example.com',
-        total: 199.99,
+        total: 5999.00, // ₹5,999.00
         status: 'shipped',
         date: '2024-01-14',
         items: 1,
@@ -66,7 +67,7 @@ const Dashboard = () => {
         id: 'ORD-004',
         customer: 'Sarah Wilson',
         email: 'sarah@example.com',
-        total: 75.25,
+        total: 2250.25, // ₹2,250.25
         status: 'pending',
         date: '2024-01-14',
         items: 4,
@@ -77,21 +78,21 @@ const Dashboard = () => {
         id: '1',
         name: 'Classic White T-Shirt',
         sales: 145,
-        revenue: 4350.00,
+        revenue: 130500.00, // ₹1,30,500.00
         image: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80',
       },
       {
         id: '2',
         name: 'Denim Jacket',
         sales: 89,
-        revenue: 8010.00,
+        revenue: 240300.00, // ₹2,40,300.00
         image: 'https://images.unsplash.com/photo-1544966503-7cc5ac882d5f?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80',
       },
       {
         id: '3',
         name: 'Summer Dress',
         sales: 67,
-        revenue: 5359.33,
+        revenue: 160779.75, // ₹1,60,779.75
         image: 'https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80',
       },
     ],
@@ -227,7 +228,7 @@ const Dashboard = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <StatCard
             title="Total Revenue"
-            value={`$${stats.totalRevenue.toLocaleString()}`}
+            value={formatPrice(stats.totalRevenue)}
             icon={CurrencyDollarIcon}
             change={12.5}
             changeType="increase"
@@ -286,7 +287,7 @@ const Dashboard = () => {
                       <p className="text-sm text-gray-600">{order.customer}</p>
                     </div>
                     <div className="text-right">
-                      <p className="font-semibold text-gray-900">${order.total}</p>
+                      <p className="font-semibold text-gray-900">{formatPrice(order.total)}</p>
                       <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${getStatusColor(order.status)}`}>
                         {order.status}
                       </span>
@@ -334,7 +335,7 @@ const Dashboard = () => {
                       <p className="text-sm text-gray-600">{product.sales} sales</p>
                     </div>
                     <div className="text-right">
-                      <p className="font-semibold text-gray-900">${product.revenue.toLocaleString()}</p>
+                      <p className="font-semibold text-gray-900">{formatPrice(product.revenue)}</p>
                       <div className="flex items-center">
                         <span className="text-sm text-gray-600">#{index + 1}</span>
                         <ArrowUpIcon className="h-4 w-4 text-green-500 ml-1" />

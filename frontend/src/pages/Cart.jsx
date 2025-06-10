@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useCart } from '../context/CartContext';
+import { formatPrice } from '../utils/currency';
 import {
   TrashIcon,
   PlusIcon,
@@ -19,8 +20,8 @@ const Cart = () => {
   const [promoDiscount, setPromoDiscount] = useState(0);
 
   const subtotal = getCartTotal();
-  const shipping = subtotal > 50 ? 0 : 9.99;
-  const tax = subtotal * 0.08; // 8% tax
+  const shipping = subtotal > 499 ? 0 : 99; // Free shipping over ₹499, otherwise ₹99
+  const tax = subtotal * 0.18; // 18% GST (Indian tax)
   const discount = subtotal * (promoDiscount / 100);
   const total = subtotal + shipping + tax - discount;
 
@@ -160,11 +161,11 @@ const Cart = () => {
                           <div className="flex items-center space-x-4">
                             <div className="text-right">
                               <p className="text-lg font-semibold text-gray-900">
-                                ${(item.price * item.quantity).toFixed(2)}
+                                {formatPrice(item.price * item.quantity)}
                               </p>
                               {item.quantity > 1 && (
                                 <p className="text-sm text-gray-600">
-                                  ${item.price} each
+                                  {formatPrice(item.price)} each
                                 </p>
                               )}
                             </div>
@@ -221,30 +222,30 @@ const Cart = () => {
               <div className="space-y-3 mb-6">
                 <div className="flex justify-between text-gray-600">
                   <span>Subtotal ({getCartCount()} items)</span>
-                  <span>${subtotal.toFixed(2)}</span>
+                  <span>{formatPrice(subtotal)}</span>
                 </div>
 
                 <div className="flex justify-between text-gray-600">
                   <span>Shipping</span>
-                  <span>{shipping === 0 ? 'Free' : `$${shipping.toFixed(2)}`}</span>
+                  <span>{shipping === 0 ? 'Free' : formatPrice(shipping)}</span>
                 </div>
 
                 <div className="flex justify-between text-gray-600">
-                  <span>Tax</span>
-                  <span>${tax.toFixed(2)}</span>
+                  <span>GST (18%)</span>
+                  <span>{formatPrice(tax)}</span>
                 </div>
 
                 {discount > 0 && (
                   <div className="flex justify-between text-green-600">
                     <span>Discount ({promoDiscount}%)</span>
-                    <span>-${discount.toFixed(2)}</span>
+                    <span>-{formatPrice(discount)}</span>
                   </div>
                 )}
 
                 <div className="border-t pt-3">
                   <div className="flex justify-between text-lg font-semibold text-gray-900">
                     <span>Total</span>
-                    <span>${total.toFixed(2)}</span>
+                    <span>{formatPrice(total)}</span>
                   </div>
                 </div>
               </div>
@@ -261,7 +262,7 @@ const Cart = () => {
               <div className="space-y-3 text-sm text-gray-600">
                 <div className="flex items-center space-x-2">
                   <TruckIcon className="h-4 w-4" />
-                  <span>Free shipping on orders over $50</span>
+                  <span>Free shipping on orders over ₹499</span>
                 </div>
                 <div className="flex items-center space-x-2">
                   <ShieldCheckIcon className="h-4 w-4" />

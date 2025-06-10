@@ -164,6 +164,24 @@ router.post('/products', async (req, res) => {
       productData.quantity = parseInt(productData.quantity);
     }
 
+    // Handle GST fields
+    if (productData.gstRate !== undefined) {
+      productData.gstRate = parseFloat(productData.gstRate);
+      // Validate GST rate
+      if (productData.gstRate < 0 || productData.gstRate > 28) {
+        return res.status(400).json({
+          message: 'GST rate must be between 0% and 28%'
+        });
+      }
+    }
+
+    // Validate HSN code format (basic validation)
+    if (productData.hsnCode && productData.hsnCode.length > 10) {
+      return res.status(400).json({
+        message: 'HSN code cannot exceed 10 characters'
+      });
+    }
+
     console.log('Creating product with data:', productData);
 
     const product = new Product(productData);

@@ -4,6 +4,7 @@ import { toast } from 'react-hot-toast';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { orderService } from '../services/orderService';
+import { formatPrice } from '../utils/currency';
 
 const Checkout = () => {
   const navigate = useNavigate();
@@ -25,7 +26,7 @@ const Checkout = () => {
     city: '',
     state: '',
     zipCode: '',
-    country: 'United States'
+    country: 'India'
   });
 
   const [paymentMethod, setPaymentMethod] = useState('credit_card');
@@ -70,8 +71,8 @@ const Checkout = () => {
     try {
       // Calculate prices
       const itemsPrice = getTotalPrice();
-      const shippingPrice = 10.00; // Fixed shipping
-      const taxPrice = itemsPrice * 0.08; // 8% tax
+      const shippingPrice = itemsPrice > 499 ? 0 : 99; // Free shipping over ₹499, otherwise ₹99
+      const taxPrice = itemsPrice * 0.18; // 18% GST (Indian tax)
       const totalPrice = itemsPrice + shippingPrice + taxPrice;
 
       console.log('Cart items before processing:', cartItems);
@@ -319,6 +320,7 @@ const Checkout = () => {
                       required
                       className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                     >
+                      <option value="India">India</option>
                       <option value="United States">United States</option>
                       <option value="Canada">Canada</option>
                       <option value="United Kingdom">United Kingdom</option>
@@ -392,7 +394,7 @@ const Checkout = () => {
                     )}
                   </div>
                   <div className="text-sm font-medium text-gray-900">
-                    ${(item.price * item.quantity).toFixed(2)}
+                    {formatPrice(item.price * item.quantity)}
                   </div>
                 </div>
               ))}
@@ -402,20 +404,20 @@ const Checkout = () => {
             <div className="border-t pt-4 space-y-2">
               <div className="flex justify-between text-sm">
                 <span className="text-gray-600">Subtotal</span>
-                <span className="text-gray-900">${getTotalPrice().toFixed(2)}</span>
+                <span className="text-gray-900">{formatPrice(getTotalPrice())}</span>
               </div>
               <div className="flex justify-between text-sm">
                 <span className="text-gray-600">Shipping</span>
-                <span className="text-gray-900">$10.00</span>
+                <span className="text-gray-900">{getTotalPrice() > 499 ? 'Free' : formatPrice(99)}</span>
               </div>
               <div className="flex justify-between text-sm">
-                <span className="text-gray-600">Tax</span>
-                <span className="text-gray-900">${(getTotalPrice() * 0.08).toFixed(2)}</span>
+                <span className="text-gray-600">GST (18%)</span>
+                <span className="text-gray-900">{formatPrice(getTotalPrice() * 0.18)}</span>
               </div>
               <div className="border-t pt-2 flex justify-between text-lg font-semibold">
                 <span className="text-gray-900">Total</span>
                 <span className="text-gray-900">
-                  ${(getTotalPrice() + 10 + (getTotalPrice() * 0.08)).toFixed(2)}
+                  {formatPrice(getTotalPrice() + (getTotalPrice() > 499 ? 0 : 99) + (getTotalPrice() * 0.18))}
                 </span>
               </div>
             </div>
