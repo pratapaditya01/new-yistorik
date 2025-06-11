@@ -1,4 +1,5 @@
-import React, { Component } from 'react';
+import React, { Component, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { ExclamationTriangleIcon, ArrowPathIcon } from '@heroicons/react/24/outline';
 
 /**
@@ -204,6 +205,113 @@ export const LoadingWithError = ({
   }
 
   return children;
+};
+
+/**
+ * 404 Error Handler Component
+ */
+export const NotFoundHandler = ({ error, onRetry }) => {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    // Log 404 error for debugging
+    console.error('404 Error detected:', {
+      error: error?.message,
+      url: window.location.href,
+      timestamp: new Date().toISOString()
+    });
+  }, [error]);
+
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="max-w-md w-full bg-white rounded-lg shadow-md p-8 text-center">
+        <div className="text-6xl mb-4">🔍</div>
+        <h1 className="text-3xl font-bold text-gray-900 mb-4">404 - Not Found</h1>
+        <p className="text-gray-600 mb-6">
+          The resource you're looking for could not be found.
+        </p>
+
+        <div className="space-y-3">
+          <button
+            onClick={() => window.location.reload()}
+            className="w-full bg-primary-600 text-white py-2 px-4 rounded-lg hover:bg-primary-700 transition-colors"
+          >
+            Reload Page
+          </button>
+
+          <button
+            onClick={() => navigate('/')}
+            className="w-full bg-gray-600 text-white py-2 px-4 rounded-lg hover:bg-gray-700 transition-colors"
+          >
+            Go Home
+          </button>
+
+          <button
+            onClick={() => navigate('/debug/404')}
+            className="w-full bg-orange-600 text-white py-2 px-4 rounded-lg hover:bg-orange-700 transition-colors"
+          >
+            Debug This Issue
+          </button>
+        </div>
+
+        <div className="mt-6 text-sm text-gray-500">
+          <p>Error details:</p>
+          <code className="bg-gray-100 p-2 rounded text-xs block mt-2">
+            {error?.message || 'Resource not found'}
+          </code>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+/**
+ * Global 404 Error Monitor
+ */
+export const GlobalErrorMonitor = () => {
+  useEffect(() => {
+    // Monitor for 404 errors in fetch requests
+    const originalFetch = window.fetch;
+    window.fetch = async (...args) => {
+      try {
+        const response = await originalFetch(...args);
+
+        if (response.status === 404) {
+          console.error('🚨 404 ERROR DETECTED:', {
+            url: args[0],
+            status: response.status,
+            statusText: response.statusText,
+            timestamp: new Date().toISOString()
+          });
+        }
+
+        return response;
+      } catch (error) {
+        console.error('🚨 NETWORK ERROR:', error);
+        throw error;
+      }
+    };
+
+    // Monitor for image load errors
+    const handleImageError = (event) => {
+      if (event.target.tagName === 'IMG') {
+        console.error('🖼️ IMAGE 404 ERROR:', {
+          src: event.target.src,
+          alt: event.target.alt,
+          timestamp: new Date().toISOString()
+        });
+      }
+    };
+
+    document.addEventListener('error', handleImageError, true);
+
+    return () => {
+      window.fetch = originalFetch;
+      document.removeEventListener('error', handleImageError, true);
+    };
+  }, []);
+
+  return null;
 };
 
 export default ErrorBoundary;

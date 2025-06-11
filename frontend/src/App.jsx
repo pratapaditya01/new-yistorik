@@ -8,6 +8,9 @@ import LoadingSpinner from './components/ui/LoadingSpinner';
 
 // Import analytics guide for easy access in console
 import './utils/analyticsGuide';
+// Import 404 debugging and fix utilities
+import './utils/debug404';
+import './utils/fix404';
 
 // Layout Components (Keep these as regular imports for better UX)
 import Navbar from './components/layout/Navbar';
@@ -37,10 +40,13 @@ const AdminCategories = lazy(() => import('./pages/admin/Categories'));
 
 // Test Pages
 const ImageFallbackTest = lazy(() => import('./pages/ImageFallbackTest'));
+const Debug404 = lazy(() => import('./pages/Debug404'));
 
 // Protected Route Components
 import ProtectedRoute from './components/auth/ProtectedRoute';
 import AdminRoute from './components/auth/AdminRoute';
+import { GlobalErrorMonitor } from './components/ui/ErrorBoundary';
+import DebugPanel from './components/ui/DebugPanel';
 
 // Loading fallback component
 const PageLoader = () => (
@@ -72,6 +78,7 @@ function App() {
       <CartProvider>
         <Router>
           <RedirectHandler />
+          <GlobalErrorMonitor />
           <div className="min-h-screen bg-gray-50 flex flex-col">
             <Navbar />
 
@@ -88,6 +95,7 @@ function App() {
 
                 {/* Test Routes */}
                 <Route path="/test/images" element={<ImageFallbackTest />} />
+                <Route path="/debug/404" element={<Debug404 />} />
                 
                 {/* Guest Checkout - No authentication required */}
                 <Route path="/checkout" element={<Checkout />} />
@@ -179,6 +187,9 @@ function App() {
 
           {/* Vercel Analytics - Track page views and visitors */}
           <Analytics />
+
+          {/* Debug Panel - Only shows in development or when enabled */}
+          <DebugPanel />
         </Router>
       </CartProvider>
     </AuthProvider>
