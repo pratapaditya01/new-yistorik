@@ -1,4 +1,5 @@
 // Optimized Image utility functions with caching and lazy loading support
+import { isExternalPlaceholder, sanitizeImageUrl } from './imageFallback';
 
 // Generate a local placeholder image data URL
 const generateLocalPlaceholder = (width = 300, height = 300, text = 'No Image') => {
@@ -53,6 +54,12 @@ const imageUrlCache = new Map();
 export const getImageUrl = (imageUrl, options = {}) => {
   if (!imageUrl) {
     return PLACEHOLDER_IMAGE;
+  }
+
+  // Check for external placeholder services and replace with local ones
+  if (isExternalPlaceholder(imageUrl)) {
+    console.warn('Replacing external placeholder with local fallback:', imageUrl);
+    return sanitizeImageUrl(imageUrl, 'product');
   }
 
   // Check cache first

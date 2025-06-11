@@ -26,6 +26,20 @@ const CORSImage = ({
       return;
     }
 
+    // Avoid loading external placeholder services that might be blocked
+    const isExternalPlaceholder = imageUrl.includes('via.placeholder.com') ||
+      imageUrl.includes('placeholder.com') ||
+      imageUrl.includes('picsum.photos') ||
+      imageUrl.includes('lorempixel.com') ||
+      imageUrl.includes('dummyimage.com');
+
+    if (isExternalPlaceholder) {
+      console.warn('Avoiding external placeholder service:', imageUrl);
+      setHasError(true);
+      setIsLoading(false);
+      return;
+    }
+
     try {
       // For backend images, try to load with proper headers
       if (imageUrl.includes('new-yistorik.onrender.com')) {

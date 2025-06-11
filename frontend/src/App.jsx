@@ -35,6 +35,9 @@ const AdminDeliveries = lazy(() => import('./pages/admin/Deliveries'));
 const AdminUsers = lazy(() => import('./pages/admin/Users'));
 const AdminCategories = lazy(() => import('./pages/admin/Categories'));
 
+// Test Pages
+const ImageFallbackTest = lazy(() => import('./pages/ImageFallbackTest'));
+
 // Protected Route Components
 import ProtectedRoute from './components/auth/ProtectedRoute';
 import AdminRoute from './components/auth/AdminRoute';
@@ -82,6 +85,9 @@ function App() {
                 <Route path="/cart" element={<Cart />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
+
+                {/* Test Routes */}
+                <Route path="/test/images" element={<ImageFallbackTest />} />
                 
                 {/* Guest Checkout - No authentication required */}
                 <Route path="/checkout" element={<Checkout />} />
