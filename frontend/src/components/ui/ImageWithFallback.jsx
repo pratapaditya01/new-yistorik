@@ -40,6 +40,7 @@ const ImageWithFallback = ({
   };
 
   // Don't try to load if no src or src is a placeholder URL that might fail
+  // Note: placehold.co is allowed as it's more reliable than via.placeholder.com
   const shouldShowPlaceholder = !src ||
     imageError ||
     src.includes('via.placeholder.com') ||

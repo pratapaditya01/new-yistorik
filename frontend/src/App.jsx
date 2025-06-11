@@ -11,6 +11,8 @@ import './utils/analyticsGuide';
 // Import 404 debugging and fix utilities
 import './utils/debug404';
 import './utils/fix404';
+// Import placeholder migration utility
+import './utils/placeholderMigration';
 
 // Layout Components (Keep these as regular imports for better UX)
 import Navbar from './components/layout/Navbar';

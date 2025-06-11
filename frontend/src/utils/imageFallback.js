@@ -122,7 +122,7 @@ export const isExternalPlaceholder = (url) => {
   if (!url || typeof url !== 'string') return false;
   
   const externalServices = [
-    'via.placeholder.com',
+    'via.placeholder.com',        // Unreliable - blocks frequently
     'placeholder.com',
     'picsum.photos',
     'lorempixel.com',
@@ -132,6 +132,7 @@ export const isExternalPlaceholder = (url) => {
     'placekitten.com',
     'placebear.com',
     'fillmurray.com'
+    // Note: placehold.co is NOT in this list - it's more reliable
   ];
   
   return externalServices.some(service => url.includes(service));

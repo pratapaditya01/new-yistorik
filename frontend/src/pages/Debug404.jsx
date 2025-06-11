@@ -82,7 +82,8 @@ const Debug404 = () => {
 
   const testProblematicUrls = async () => {
     const urls = [
-      'https://via.placeholder.com/300x300',
+      'https://placehold.co/300x300?text=Test+Image',  // Should work
+      'https://via.placeholder.com/300x300',           // Should be blocked
       'https://broken-url.com/image.jpg',
       '/api/nonexistent',
       '/uploads/missing-image.jpg'
@@ -199,12 +200,23 @@ const Debug404 = () => {
 
         {/* Test Images */}
         <div className="bg-white rounded-lg shadow-md p-6 mb-8">
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">Test Problematic Images</h2>
+          <h2 className="text-2xl font-bold text-gray-900 mb-4">Test Image Services</h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div className="text-center">
-              <h3 className="text-sm font-medium mb-2">via.placeholder.com</h3>
-              <img 
-                src="https://via.placeholder.com/150x150" 
+              <h3 className="text-sm font-medium mb-2 text-green-600">placehold.co (Reliable)</h3>
+              <img
+                src="https://placehold.co/150x150?text=Reliable"
+                alt="Placehold.co"
+                className="w-full h-32 object-cover rounded border"
+                onError={(e) => console.error('Image failed:', e.target.src)}
+                onLoad={() => console.log('Image loaded:', 'placehold.co')}
+              />
+            </div>
+
+            <div className="text-center">
+              <h3 className="text-sm font-medium mb-2 text-red-600">via.placeholder.com (Blocked)</h3>
+              <img
+                src="https://via.placeholder.com/150x150"
                 alt="Via Placeholder"
                 className="w-full h-32 object-cover rounded border"
                 onError={(e) => console.error('Image failed:', e.target.src)}

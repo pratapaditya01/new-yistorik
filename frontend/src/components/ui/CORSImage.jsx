@@ -27,6 +27,7 @@ const CORSImage = ({
     }
 
     // Avoid loading external placeholder services that might be blocked
+    // Note: placehold.co is allowed as it's more reliable
     const isExternalPlaceholder = imageUrl.includes('via.placeholder.com') ||
       imageUrl.includes('placeholder.com') ||
       imageUrl.includes('picsum.photos') ||

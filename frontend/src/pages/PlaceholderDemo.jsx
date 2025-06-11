@@ -167,7 +167,19 @@ const PlaceholderDemo = () => {
             </div>
             
             <div className="bg-white p-6 rounded-lg shadow-md">
-              <h3 className="text-lg font-semibold mb-4">Via Placeholder (Blocked)</h3>
+              <h3 className="text-lg font-semibold mb-4 text-green-600">Placehold.co (Reliable)</h3>
+              <ImageWithFallback
+                src="https://placehold.co/300x200?text=Reliable+Service"
+                alt="Reliable Placeholder"
+                width={250}
+                height={200}
+                placeholderText="Reliable External"
+                className="w-full"
+              />
+            </div>
+
+            <div className="bg-white p-6 rounded-lg shadow-md">
+              <h3 className="text-lg font-semibold mb-4 text-red-600">Via Placeholder (Blocked)</h3>
               <ImageWithFallback
                 src="https://via.placeholder.com/300x200"
                 alt="Blocked Placeholder"
@@ -205,9 +217,9 @@ const PlaceholderDemo = () => {
             </div>
             
             <div className="bg-white p-6 rounded-lg shadow-md text-center">
-              <h3 className="text-lg font-semibold mb-4">Large Product</h3>
-              <ProductImage 
-                src="https://via.placeholder.com/400"
+              <h3 className="text-lg font-semibold mb-4">Large Product (Reliable)</h3>
+              <ProductImage
+                src="https://placehold.co/400x400?text=Product+Image"
                 alt="Product"
                 size="lg"
                 className="mx-auto"
@@ -253,9 +265,9 @@ const PlaceholderDemo = () => {
             </div>
             
             <div className="bg-white p-6 rounded-lg shadow-md text-center">
-              <h3 className="text-lg font-semibold mb-4">Large Avatar</h3>
-              <AvatarImage 
-                src="https://via.placeholder.com/100"
+              <h3 className="text-lg font-semibold mb-4">Large Avatar (Reliable)</h3>
+              <AvatarImage
+                src="https://placehold.co/100x100?text=MJ"
                 alt="User Avatar"
                 name="Mike Johnson"
                 size="lg"
@@ -314,14 +326,16 @@ const PlaceholderDemo = () => {
           <h2 className="text-2xl font-bold text-gray-900 mb-4">About These Placeholders</h2>
           <div className="prose max-w-none">
             <p className="text-gray-600 mb-4">
-              These placeholder images are generated locally using SVG and don't rely on external services 
-              like via.placeholder.com. This ensures they work even when:
+              These placeholder images are generated locally using SVG and provide reliable fallbacks.
+              When external services are needed, we use reliable services like placehold.co instead of
+              problematic ones like via.placeholder.com. This ensures they work even when:
             </p>
             <ul className="list-disc list-inside text-gray-600 mb-4">
               <li>External placeholder services are blocked or unavailable</li>
               <li>Working offline or in restricted network environments</li>
               <li>Need consistent styling across the application</li>
               <li>Want to avoid external dependencies</li>
+              <li>Require more reliable external placeholder services</li>
             </ul>
             <p className="text-gray-600">
               All components include proper fallback handling and can be customized with different sizes, 

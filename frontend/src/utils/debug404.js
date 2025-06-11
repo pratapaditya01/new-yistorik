@@ -186,7 +186,8 @@ export const debug404 = {
     console.group('🔍 404 DEBUG: CHECKING IMAGE URLS');
     
     const imageUrls = [
-      'https://via.placeholder.com/300x300',
+      'https://placehold.co/300x300?text=Test+Image',  // More reliable placeholder service
+      'https://via.placeholder.com/300x300',           // Problematic service (should be blocked)
       'https://picsum.photos/300/300',
       'https://new-yistorik.onrender.com/uploads/sample-product.jpg',
       '/uploads/placeholder.jpg',

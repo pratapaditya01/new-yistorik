@@ -19,14 +19,15 @@ const ImageFallbackTest = () => {
 
   // Test URLs including problematic ones
   const testUrls = [
+    'https://placehold.co/300x300?text=Reliable+Service',              // This should work (reliable)
     'https://via.placeholder.com/300x300/f3f4f6/9ca3af?text=No+Image', // This should be blocked
-    'https://picsum.photos/300/300', // This should be blocked
-    'https://broken-url.com/image.jpg', // This should fail
-    'https://new-yistorik.onrender.com/uploads/sample-product.jpg', // This might work
-    '', // Empty URL
-    null, // Null URL
-    'placeholder', // Invalid URL
-    '/uploads/valid-image.jpg' // Relative URL
+    'https://picsum.photos/300/300',                                   // This should be blocked
+    'https://broken-url.com/image.jpg',                                // This should fail
+    'https://new-yistorik.onrender.com/uploads/sample-product.jpg',    // This might work
+    '',                                                                // Empty URL
+    null,                                                              // Null URL
+    'placeholder',                                                     // Invalid URL
+    '/uploads/valid-image.jpg'                                         // Relative URL
   ];
 
   const runImageTests = () => {
@@ -118,10 +119,23 @@ const ImageFallbackTest = () => {
           </section>
         )}
 
-        {/* Problematic URLs Demo */}
+        {/* URL Comparison Demo */}
         <section className="mb-12">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">Problematic URLs (Now Fixed)</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <h2 className="text-2xl font-bold text-gray-900 mb-6">Placeholder Service Comparison</h2>
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+            <div className="bg-white p-6 rounded-lg shadow-md">
+              <h3 className="text-lg font-semibold mb-4 text-green-600">placehold.co (Reliable)</h3>
+              <ReliableImage
+                src="https://placehold.co/300x300?text=Reliable+Service"
+                alt="Placehold.co"
+                className="w-full h-48 object-cover rounded"
+                fallbackType="product"
+              />
+              <p className="text-sm text-gray-600 mt-2">
+                This service is more reliable and works consistently.
+              </p>
+            </div>
+
             <div className="bg-white p-6 rounded-lg shadow-md">
               <h3 className="text-lg font-semibold mb-4 text-red-600">via.placeholder.com (Blocked)</h3>
               <ReliableImage
@@ -247,7 +261,8 @@ const ImageFallbackTest = () => {
           <h2 className="text-2xl font-bold text-gray-900 mb-6">Image Gallery</h2>
           <ReliableImageGrid
             images={[
-              'https://via.placeholder.com/400x300',
+              'https://placehold.co/400x300?text=Reliable+1',
+              'https://via.placeholder.com/400x300',  // This will be blocked
               'https://broken-url.com/image1.jpg',
               '',
               'https://picsum.photos/400/300',
@@ -264,7 +279,7 @@ const ImageFallbackTest = () => {
         <section className="mb-12">
           <h2 className="text-2xl font-bold text-gray-900 mb-6">Banner Image</h2>
           <ReliableBannerImage
-            src="https://via.placeholder.com/1200x400"
+            src="https://placehold.co/1200x400?text=Reliable+Banner+Image"
             alt="Banner"
             height="h-48"
             className="rounded-lg"
@@ -279,7 +294,8 @@ const ImageFallbackTest = () => {
               The reliable image system automatically handles problematic image URLs:
             </p>
             <ul className="list-disc list-inside text-gray-600 mb-4 space-y-2">
-              <li><strong>External Placeholders:</strong> URLs from via.placeholder.com, picsum.photos, etc. are blocked and replaced with local SVG placeholders</li>
+              <li><strong>Unreliable External Services:</strong> URLs from via.placeholder.com, picsum.photos, etc. are blocked and replaced with local SVG placeholders</li>
+              <li><strong>Reliable External Services:</strong> Services like placehold.co are allowed as they're more dependable</li>
               <li><strong>Broken URLs:</strong> Failed image loads automatically fall back to appropriate placeholders</li>
               <li><strong>Empty/Null URLs:</strong> Show placeholders immediately without attempting to load</li>
               <li><strong>Network Errors:</strong> Handle CORS issues and network failures gracefully</li>
