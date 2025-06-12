@@ -6,6 +6,7 @@ import LoadingSpinner from '../components/ui/LoadingSpinner';
 import { ArrowRightIcon } from '@heroicons/react/24/outline';
 import { getMainImageUrl } from '../utils/imageUtils';
 import { formatPrice } from '../utils/currency';
+import ImageDebugger from '../components/debug/ImageDebugger';
 
 const Home = () => {
   const [featuredProducts, setFeaturedProducts] = useState([]);
@@ -170,7 +171,11 @@ const Home = () => {
                           alt={product.images?.[0]?.alt || product.name}
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                           onError={(e) => {
+                            console.warn('Home page image failed to load:', e.target.src);
                             e.target.src = 'https://placehold.co/300x300/f3f4f6/9ca3af?text=No+Image';
+                          }}
+                          onLoad={() => {
+                            console.log('Home page image loaded successfully:', getMainImageUrl(product.images));
                           }}
                         />
                       </div>
@@ -242,6 +247,9 @@ const Home = () => {
           </motion.div>
         </div>
       </section>
+
+      {/* Debug component - remove this after fixing the issue */}
+      <ImageDebugger products={featuredProducts} />
     </div>
   );
 };

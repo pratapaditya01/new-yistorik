@@ -26,6 +26,7 @@ const ImageWithFallback = ({
   }, [src]);
 
   const handleImageError = (e) => {
+    console.warn('Image failed to load:', src);
     setImageError(true);
     if (onError) {
       onError(e);
@@ -41,16 +42,33 @@ const ImageWithFallback = ({
 
   // Don't try to load if no src or src is a placeholder URL that might fail
   // Note: placehold.co is allowed as it's more reliable than via.placeholder.com
+  // Be more specific about what to block - only block actual placeholder services, not uploaded images
   const shouldShowPlaceholder = !src ||
     imageError ||
     src.includes('via.placeholder.com') ||
     src.includes('picsum.photos') ||
     src.includes('lorempixel.com') ||
-    src.startsWith('/placeholder') ||
+    src.includes('dummyimage.com') ||
+    src.includes('placehold.it') ||
     src === 'placeholder' ||
-    src === 'no-image';
+    src === 'no-image' ||
+    (src.startsWith('/placeholder') && !src.startsWith('/uploads/'));
 
   if (shouldShowPlaceholder) {
+    // Debug logging to help identify why images are being blocked
+    if (src && src !== 'placeholder' && src !== 'no-image') {
+      console.log('ImageWithFallback: Showing placeholder for:', src, {
+        noSrc: !src,
+        imageError,
+        isViaPlaceholder: src.includes('via.placeholder.com'),
+        isPicsum: src.includes('picsum.photos'),
+        isLorempixel: src.includes('lorempixel.com'),
+        isDummyimage: src.includes('dummyimage.com'),
+        isPlaceholdIt: src.includes('placehold.it'),
+        isPlaceholderPath: src.startsWith('/placeholder') && !src.startsWith('/uploads/')
+      });
+    }
+
     switch (fallbackType) {
       case 'product':
         return (

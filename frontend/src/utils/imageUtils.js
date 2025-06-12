@@ -53,12 +53,13 @@ const imageUrlCache = new Map();
  */
 export const getImageUrl = (imageUrl, options = {}) => {
   if (!imageUrl) {
+    console.log('getImageUrl: No imageUrl provided, using placeholder');
     return PLACEHOLDER_IMAGE;
   }
 
   // Check for external placeholder services and replace with local ones
   if (isExternalPlaceholder(imageUrl)) {
-    console.warn('Replacing external placeholder with local fallback:', imageUrl);
+    console.warn('getImageUrl: Replacing external placeholder with local fallback:', imageUrl);
     return sanitizeImageUrl(imageUrl, 'product');
   }
 
@@ -107,6 +108,7 @@ export const getImageUrl = (imageUrl, options = {}) => {
     imageUrlCache.delete(firstKey);
   }
 
+  console.log('getImageUrl: Final processed URL:', imageUrl, '→', processedUrl);
   return processedUrl;
 };
 
@@ -118,6 +120,7 @@ export const getImageUrl = (imageUrl, options = {}) => {
 export const getMainImageUrl = (images) => {
   // Handle null, undefined, or empty arrays
   if (!images || !Array.isArray(images) || images.length === 0) {
+    console.log('getMainImageUrl: No images provided, using placeholder');
     return PLACEHOLDER_PRODUCT;
   }
 
@@ -125,16 +128,21 @@ export const getMainImageUrl = (images) => {
     // Find the main image
     const mainImage = images.find(img => img && img.isMain && img.url);
     if (mainImage && mainImage.url) {
-      return getImageUrl(mainImage.url);
+      const processedUrl = getImageUrl(mainImage.url);
+      console.log('getMainImageUrl: Using main image:', mainImage.url, '→', processedUrl);
+      return processedUrl;
     }
 
     // If no main image, use the first one with a URL
     const firstImageWithUrl = images.find(img => img && img.url);
     if (firstImageWithUrl && firstImageWithUrl.url) {
-      return getImageUrl(firstImageWithUrl.url);
+      const processedUrl = getImageUrl(firstImageWithUrl.url);
+      console.log('getMainImageUrl: Using first image:', firstImageWithUrl.url, '→', processedUrl);
+      return processedUrl;
     }
 
     // Fallback if no valid images found
+    console.log('getMainImageUrl: No valid images found, using placeholder');
     return PLACEHOLDER_PRODUCT;
   } catch (error) {
     console.warn('Error processing image URL:', error);
