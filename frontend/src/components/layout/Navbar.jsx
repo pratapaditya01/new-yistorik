@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { useCart } from '../../context/CartContext';
+import MegaMenu from '../navigation/MegaMenu';
+import CategoryNavigation from '../navigation/CategoryNavigation';
 import {
   ShoppingBagIcon,
   HeartIcon,
@@ -13,6 +15,7 @@ import {
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isCategoryMenuOpen, setIsCategoryMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const { user, isAuthenticated, logout } = useAuth();
   const { totalItems, toggleCart } = useCart();
@@ -55,26 +58,10 @@ const Navbar = () => {
                 to="/products"
                 className="text-gray-700 hover:text-primary-600 px-3 py-2 rounded-md text-sm font-medium transition-colors"
               >
-                Products
+                All Products
               </Link>
-              <Link
-                to="/products?category=men"
-                className="text-gray-700 hover:text-primary-600 px-3 py-2 rounded-md text-sm font-medium transition-colors"
-              >
-                Men
-              </Link>
-              <Link
-                to="/products?category=women"
-                className="text-gray-700 hover:text-primary-600 px-3 py-2 rounded-md text-sm font-medium transition-colors"
-              >
-                Women
-              </Link>
-              <Link
-                to="/products?category=accessories"
-                className="text-gray-700 hover:text-primary-600 px-3 py-2 rounded-md text-sm font-medium transition-colors"
-              >
-                Accessories
-              </Link>
+              {/* Mega Menu */}
+              <MegaMenu />
             </div>
           </div>
 
@@ -174,17 +161,27 @@ const Navbar = () => {
               </div>
             )}
 
-            {/* Mobile menu button */}
-            <button
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="md:hidden p-2 text-gray-700 hover:text-primary-600 transition-colors"
-            >
-              {isMenuOpen ? (
-                <XMarkIcon className="h-6 w-6" />
-              ) : (
+            {/* Mobile menu buttons */}
+            <div className="md:hidden flex items-center space-x-2">
+              <button
+                onClick={() => setIsCategoryMenuOpen(!isCategoryMenuOpen)}
+                className="p-2 text-gray-700 hover:text-primary-600 transition-colors"
+                title="Categories"
+              >
                 <Bars3Icon className="h-6 w-6" />
-              )}
-            </button>
+              </button>
+              <button
+                onClick={() => setIsMenuOpen(!isMenuOpen)}
+                className="p-2 text-gray-700 hover:text-primary-600 transition-colors"
+                title="Menu"
+              >
+                {isMenuOpen ? (
+                  <XMarkIcon className="h-6 w-6" />
+                ) : (
+                  <UserIcon className="h-6 w-6" />
+                )}
+              </button>
+            </div>
           </div>
         </div>
 
@@ -216,29 +213,21 @@ const Navbar = () => {
                 className="text-gray-700 hover:text-primary-600 block px-3 py-2 rounded-md text-base font-medium"
                 onClick={() => setIsMenuOpen(false)}
               >
-                Products
+                All Products
               </Link>
-              <Link
-                to="/products?category=men"
-                className="text-gray-700 hover:text-primary-600 block px-3 py-2 rounded-md text-base font-medium"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Men
-              </Link>
-              <Link
-                to="/products?category=women"
-                className="text-gray-700 hover:text-primary-600 block px-3 py-2 rounded-md text-base font-medium"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Women
-              </Link>
-              <Link
-                to="/products?category=accessories"
-                className="text-gray-700 hover:text-primary-600 block px-3 py-2 rounded-md text-base font-medium"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Accessories
-              </Link>
+            </div>
+          </div>
+        )}
+
+        {/* Mobile Category Menu */}
+        {isCategoryMenuOpen && (
+          <div className="fixed inset-0 z-50 md:hidden">
+            <div className="fixed inset-0 bg-black bg-opacity-50" onClick={() => setIsCategoryMenuOpen(false)}></div>
+            <div className="fixed top-0 left-0 h-full w-80 max-w-full bg-white shadow-xl">
+              <CategoryNavigation
+                isMobile={true}
+                onClose={() => setIsCategoryMenuOpen(false)}
+              />
             </div>
           </div>
         )}
