@@ -123,7 +123,6 @@ export const isExternalPlaceholder = (url) => {
   
   const externalServices = [
     'via.placeholder.com',        // Unreliable - blocks frequently
-    'placeholder.com',
     'picsum.photos',
     'lorempixel.com',
     'dummyimage.com',

@@ -44,7 +44,6 @@ const ImageWithFallback = ({
   const shouldShowPlaceholder = !src ||
     imageError ||
     src.includes('via.placeholder.com') ||
-    src.includes('placeholder.com') ||
     src.includes('picsum.photos') ||
     src.includes('lorempixel.com') ||
     src.startsWith('/placeholder') ||

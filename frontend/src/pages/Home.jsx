@@ -170,7 +170,7 @@ const Home = () => {
                           alt={product.images?.[0]?.alt || product.name}
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                           onError={(e) => {
-                            e.target.src = 'https://via.placeholder.com/300x300/f3f4f6/9ca3af?text=No+Image';
+                            e.target.src = 'https://placehold.co/300x300/f3f4f6/9ca3af?text=No+Image';
                           }}
                         />
                       </div>

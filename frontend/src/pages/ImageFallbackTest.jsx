@@ -20,7 +20,7 @@ const ImageFallbackTest = () => {
   // Test URLs including problematic ones
   const testUrls = [
     'https://placehold.co/300x300?text=Reliable+Service',              // This should work (reliable)
-    'https://via.placeholder.com/300x300/f3f4f6/9ca3af?text=No+Image', // This should be blocked
+    'https://placehold.co/300x300/f3f4f6/9ca3af?text=No+Image',        // This should work (reliable)
     'https://picsum.photos/300/300',                                   // This should be blocked
     'https://broken-url.com/image.jpg',                                // This should fail
     'https://new-yistorik.onrender.com/uploads/sample-product.jpg',    // This might work
@@ -137,15 +137,15 @@ const ImageFallbackTest = () => {
             </div>
 
             <div className="bg-white p-6 rounded-lg shadow-md">
-              <h3 className="text-lg font-semibold mb-4 text-red-600">via.placeholder.com (Blocked)</h3>
+              <h3 className="text-lg font-semibold mb-4 text-green-600">placehold.co (Reliable)</h3>
               <ReliableImage
-                src="https://via.placeholder.com/300x300/f3f4f6/9ca3af?text=No+Image"
-                alt="Via Placeholder"
+                src="https://placehold.co/300x300/f3f4f6/9ca3af?text=No+Image"
+                alt="Placehold.co Placeholder"
                 className="w-full h-48 object-cover rounded"
                 fallbackType="product"
               />
               <p className="text-sm text-gray-600 mt-2">
-                This external service is automatically blocked and replaced with a local fallback.
+                This reliable external service works consistently and is preferred over via.placeholder.com.
               </p>
             </div>
             
@@ -247,8 +247,8 @@ const ImageFallbackTest = () => {
             
             <div className="text-center">
               <h3 className="text-sm font-medium mb-2">External Placeholder</h3>
-              <ReliableAvatarImage 
-                src="https://via.placeholder.com/100x100"
+              <ReliableAvatarImage
+                src="https://placehold.co/100x100?text=Avatar"
                 name="Bob Wilson"
                 size="lg"
               />

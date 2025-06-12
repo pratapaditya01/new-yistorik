@@ -71,7 +71,7 @@ const AccessibilityTest = () => {
   const testImages = [
     'https://new-yistorik.onrender.com/uploads/sample1.jpg',
     'https://new-yistorik.onrender.com/uploads/sample2.jpg',
-    'https://via.placeholder.com/300x300/f3f4f6/9ca3af?text=External+Image',
+    'https://placehold.co/300x300/f3f4f6/9ca3af?text=External+Image',
     'https://broken-url.com/image.jpg',
     ''
   ];
