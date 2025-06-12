@@ -1,41 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const multer = require('multer');
-const path = require('path');
-const fs = require('fs');
 const { protect, admin } = require('../middleware/auth');
-
-// Fallback local storage for demo purposes
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    const uploadPath = 'uploads/';
-    if (!fs.existsSync(uploadPath)) {
-      fs.mkdirSync(uploadPath, { recursive: true });
-    }
-    cb(null, uploadPath);
-  },
-  filename: function (req, file, cb) {
-    cb(null, Date.now() + '-' + Math.round(Math.random() * 1E9) + path.extname(file.originalname));
-  }
-});
-
-const upload = multer({
-  storage: storage,
-  limits: {
-    fileSize: 5 * 1024 * 1024 // 5MB limit
-  },
-  fileFilter: function (req, file, cb) {
-    const allowedTypes = /jpeg|jpg|png|gif|webp/;
-    const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
-    const mimetype = allowedTypes.test(file.mimetype);
-
-    if (mimetype && extname) {
-      return cb(null, true);
-    } else {
-      cb(new Error('Only image files are allowed'));
-    }
-  }
-});
+const { upload, deleteImage, extractPublicId } = require('../config/cloudinary');
 
 // Upload single image
 router.post('/image', protect, admin, upload.single('image'), async (req, res) => {
@@ -44,12 +10,12 @@ router.post('/image', protect, admin, upload.single('image'), async (req, res) =
       return res.status(400).json({ message: 'No image file provided' });
     }
 
-    // Return the uploaded image information (local storage)
+    // Return the uploaded image information (Cloudinary)
     res.json({
       message: 'Image uploaded successfully',
       image: {
-        url: `/uploads/${req.file.filename}`,
-        publicId: req.file.filename,
+        url: req.file.path, // Cloudinary URL
+        publicId: req.file.filename, // Cloudinary public ID
         originalName: req.file.originalname,
         size: req.file.size,
       }
@@ -67,10 +33,10 @@ router.post('/images', protect, admin, upload.array('images', 5), async (req, re
       return res.status(400).json({ message: 'No image files provided' });
     }
 
-    // Return the uploaded images information (local storage)
+    // Return the uploaded images information (Cloudinary)
     const images = req.files.map(file => ({
-      url: `/uploads/${file.filename}`,
-      publicId: file.filename,
+      url: file.path, // Cloudinary URL
+      publicId: file.filename, // Cloudinary public ID
       originalName: file.originalname,
       size: file.size,
     }));
@@ -90,52 +56,23 @@ router.delete('/image/:publicId', protect, admin, async (req, res) => {
   try {
     const { publicId } = req.params;
 
-    // For local storage, delete the file
-    const filePath = path.join(__dirname, '..', 'uploads', publicId);
+    // Delete from Cloudinary
+    const result = await deleteImage(publicId);
 
-    if (fs.existsSync(filePath)) {
-      fs.unlinkSync(filePath);
-      res.json({ message: 'Image deleted successfully' });
+    if (result.result === 'ok' || result.result === 'not found') {
+      res.json({
+        message: 'Image deleted successfully',
+        result: result.result
+      });
     } else {
-      res.status(404).json({ message: 'Image not found' });
+      res.status(400).json({
+        message: 'Failed to delete image',
+        result: result.result
+      });
     }
   } catch (error) {
     console.error('Image deletion error:', error);
     res.status(500).json({ message: 'Error deleting image' });
-  }
-});
-
-// Serve images with proper CORS headers
-router.get('/image/:filename', (req, res) => {
-  try {
-    const filename = req.params.filename;
-    const imagePath = path.join(__dirname, '../uploads', filename);
-
-    // Check if file exists
-    if (!fs.existsSync(imagePath)) {
-      return res.status(404).json({ message: 'Image not found' });
-    }
-
-    // Set CORS headers
-    res.header('Access-Control-Allow-Origin', '*');
-    res.header('Access-Control-Allow-Methods', 'GET, OPTIONS');
-    res.header('Cross-Origin-Resource-Policy', 'cross-origin');
-
-    // Set content type based on file extension
-    const ext = path.extname(filename).toLowerCase();
-    const contentTypes = {
-      '.jpg': 'image/jpeg',
-      '.jpeg': 'image/jpeg',
-      '.png': 'image/png',
-      '.gif': 'image/gif',
-      '.webp': 'image/webp'
-    };
-
-    res.contentType(contentTypes[ext] || 'image/jpeg');
-    res.sendFile(imagePath);
-  } catch (error) {
-    console.error('Error serving image:', error);
-    res.status(500).json({ message: 'Error serving image' });
   }
 });
 
