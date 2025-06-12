@@ -6,11 +6,7 @@ import { useAuth } from '../context/AuthContext';
 import { orderService } from '../services/orderService';
 import { formatPrice } from '../utils/currency';
 import RazorpayPayment from '../components/payment/RazorpayPayment';
-import PaymentMethodDebug from '../components/debug/PaymentMethodDebug';
-import { debugGSTFlow } from '../utils/gstFlowDebug';
-import { debugSizeFlow } from '../utils/sizeFlowDebug';
 import { analytics } from '../utils/analytics';
-import { testOrderGST } from '../utils/testOrderGST';
 
 const Checkout = () => {
   const navigate = useNavigate();
@@ -133,7 +129,10 @@ const Checkout = () => {
 
       // Debug size information in order items
       console.log('📏 CHECKOUT - Size information in order items:');
-      debugSizeFlow.debugCartSizes(cartItems);
+      console.log('Cart items with sizes:', cartItems.map(item => ({
+        name: item.product.name,
+        selectedVariants: item.selectedVariants
+      })));
 
       // Prepare shipping address
       const fullShippingAddress = {
@@ -172,7 +171,7 @@ const Checkout = () => {
 
       // Debug final order data with sizes
       console.log('💳 CHECKOUT - Final order data with sizes:');
-      debugSizeFlow.debugCheckoutSizes(orderData);
+      console.log('Order data:', JSON.stringify(orderData, null, 2));
 
       // Create order in database
       const response = await orderService.createOrder(orderData);
@@ -228,9 +227,6 @@ const Checkout = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between mb-8">
           <h1 className="text-3xl font-bold text-gray-900">Checkout</h1>
-          <div className="text-xs text-red-600 bg-red-100 px-3 py-1 rounded-full font-bold">
-            🚨 FIXED v5.0 - OLD PAYMENT METHODS REMOVED
-          </div>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -397,20 +393,8 @@ const Checkout = () => {
             <div className="bg-white rounded-lg shadow p-6">
               <h2 className="text-xl font-semibold text-gray-900 mb-4">Payment Method</h2>
 
-              {/* Debug Component */}
-              <PaymentMethodDebug currentMethod={paymentMethod} />
 
-              {/* CLEAR DEBUG MESSAGE */}
-              <div className="bg-red-100 border-2 border-red-500 rounded-lg p-4 mb-4">
-                <h3 className="text-lg font-bold text-red-800 mb-2">
-                  🚨 DEBUGGING: Current Payment Methods Being Rendered
-                </h3>
-                <div className="text-sm text-red-700">
-                  <p><strong>If you see old payment methods below, it's a browser cache issue!</strong></p>
-                  <p><strong>Expected:</strong> Only "Razorpay" and "Cash on Delivery"</p>
-                  <p><strong>Current Time:</strong> {new Date().toLocaleString()}</p>
-                </div>
-              </div>
+
               <div className="space-y-4">
                 {/* Razorpay Online Payment */}
                 <div className={`border rounded-lg p-4 cursor-pointer transition-colors ${
@@ -506,7 +490,7 @@ const Checkout = () => {
 
                       // Debug the order data
                       console.log('💳 CHECKOUT - Razorpay order data:');
-                      debugGSTFlow.debugRazorpayData(orderData);
+                      console.log('Razorpay order data:', orderData);
 
                       return orderData;
                     })()}
