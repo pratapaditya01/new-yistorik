@@ -41,11 +41,11 @@ const ImageWithFallback = ({
   };
 
   // Don't try to load if no src or src is a placeholder URL that might fail
-  // Note: placehold.co is allowed as it's more reliable than via.placeholder.com
+  // Note: placehold.co is allowed as it's more reliable than placehold.co
   // Be more specific about what to block - only block actual placeholder services, not uploaded images
   const shouldShowPlaceholder = !src ||
     imageError ||
-    src.includes('via.placeholder.com') ||
+    src.includes('placehold.co') ||
     src.includes('picsum.photos') ||
     src.includes('lorempixel.com') ||
     src.includes('dummyimage.com') ||
@@ -60,7 +60,7 @@ const ImageWithFallback = ({
       console.log('ImageWithFallback: Showing placeholder for:', src, {
         noSrc: !src,
         imageError,
-        isViaPlaceholder: src.includes('via.placeholder.com'),
+        isViaPlaceholder: src.includes('placehold.co'),
         isPicsum: src.includes('picsum.photos'),
         isLorempixel: src.includes('lorempixel.com'),
         isDummyimage: src.includes('dummyimage.com'),

@@ -93,7 +93,7 @@ async function debugProducts() {
       isActive: true,
       isFeatured: false,
       images: [{
-        url: 'https://via.placeholder.com/300',
+        url: 'https://placehold.co/300',
         alt: 'Test product image',
         isMain: true
       }]

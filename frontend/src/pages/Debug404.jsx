@@ -83,7 +83,7 @@ const Debug404 = () => {
   const testProblematicUrls = async () => {
     const urls = [
       'https://placehold.co/300x300?text=Test+Image',  // Should work
-      'https://via.placeholder.com/300x300',           // Should be blocked
+      'https://placehold.co/300x300',           // Should be blocked
       'https://broken-url.com/image.jpg',
       '/api/nonexistent',
       '/uploads/missing-image.jpg'
@@ -214,13 +214,13 @@ const Debug404 = () => {
             </div>
 
             <div className="text-center">
-              <h3 className="text-sm font-medium mb-2 text-red-600">via.placeholder.com (Blocked)</h3>
+              <h3 className="text-sm font-medium mb-2 text-red-600">placehold.co (Blocked)</h3>
               <img
-                src="https://via.placeholder.com/150x150"
+                src="https://placehold.co/150x150"
                 alt="Via Placeholder"
                 className="w-full h-32 object-cover rounded border"
                 onError={(e) => console.error('Image failed:', e.target.src)}
-                onLoad={() => console.log('Image loaded:', 'via.placeholder.com')}
+                onLoad={() => console.log('Image loaded:', 'placehold.co')}
               />
             </div>
             
@@ -265,7 +265,7 @@ const Debug404 = () => {
           <div className="space-y-4">
             <div className="border-l-4 border-red-500 pl-4">
               <h3 className="font-semibold text-red-700">External Placeholder Services</h3>
-              <p className="text-gray-600">via.placeholder.com, picsum.photos blocked by network</p>
+              <p className="text-gray-600">placehold.co, picsum.photos blocked by network</p>
               <p className="text-sm text-gray-500">Solution: Use local SVG placeholders</p>
             </div>
             

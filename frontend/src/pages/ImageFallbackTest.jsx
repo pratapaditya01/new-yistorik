@@ -145,7 +145,7 @@ const ImageFallbackTest = () => {
                 fallbackType="product"
               />
               <p className="text-sm text-gray-600 mt-2">
-                This reliable external service works consistently and is preferred over via.placeholder.com.
+                This reliable external service works consistently and is preferred over placehold.co.
               </p>
             </div>
             
@@ -204,7 +204,7 @@ const ImageFallbackTest = () => {
             <div className="text-center">
               <h3 className="text-lg font-semibold mb-4">Large</h3>
               <ReliableProductImage 
-                src="https://via.placeholder.com/300x300"
+                src="https://placehold.co/300x300"
                 alt="Product"
                 size="lg"
                 className="mx-auto"
@@ -262,7 +262,7 @@ const ImageFallbackTest = () => {
           <ReliableImageGrid
             images={[
               'https://placehold.co/400x300?text=Reliable+1',
-              'https://via.placeholder.com/400x300',  // This will be blocked
+              'https://placehold.co/400x300',  // This will be blocked
               'https://broken-url.com/image1.jpg',
               '',
               'https://picsum.photos/400/300',
@@ -294,7 +294,7 @@ const ImageFallbackTest = () => {
               The reliable image system automatically handles problematic image URLs:
             </p>
             <ul className="list-disc list-inside text-gray-600 mb-4 space-y-2">
-              <li><strong>Unreliable External Services:</strong> URLs from via.placeholder.com, picsum.photos, etc. are blocked and replaced with local SVG placeholders</li>
+              <li><strong>Unreliable External Services:</strong> URLs from placehold.co, picsum.photos, etc. are blocked and replaced with local SVG placeholders</li>
               <li><strong>Reliable External Services:</strong> Services like placehold.co are allowed as they're more dependable</li>
               <li><strong>Broken URLs:</strong> Failed image loads automatically fall back to appropriate placeholders</li>
               <li><strong>Empty/Null URLs:</strong> Show placeholders immediately without attempting to load</li>

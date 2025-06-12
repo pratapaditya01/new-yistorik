@@ -23,7 +23,7 @@ export const placeholderMigration = {
    * Convert via.placeholder.com URLs to placehold.co
    */
   convertViaPlaceholderToPlaceholdCo: (url) => {
-    if (!url || !url.includes('via.placeholder.com')) {
+    if (!url || !url.includes('placehold.co')) {
       return url;
     }
 
@@ -61,7 +61,7 @@ export const placeholderMigration = {
       return newUrl;
       
     } catch (error) {
-      console.warn('Failed to convert via.placeholder.com URL:', url, error);
+      console.warn('Failed to convert placehold.co URL:', url, error);
       return `https://placehold.co/300x300?text=${encodeURIComponent('No Image')}`;
     }
   },
@@ -83,7 +83,7 @@ export const placeholderMigration = {
     }
 
     // Convert via.placeholder.com specifically
-    if (url.includes('via.placeholder.com')) {
+    if (url.includes('placehold.co')) {
       return placeholderMigration.convertViaPlaceholderToPlaceholdCo(url);
     }
 
@@ -208,8 +208,8 @@ export const placeholderMigration = {
     console.group('🧪 TESTING URL CONVERSIONS');
     
     const testUrls = [
-      'https://via.placeholder.com/300x300',
-      'https://via.placeholder.com/400x200/ff0000/ffffff?text=Test',
+      'https://placehold.co/300x300',
+      'https://placehold.co/400x200/ff0000/ffffff?text=Test',
       'https://picsum.photos/300/300',
       'https://lorempixel.com/400/300',
       'https://placehold.co/300x300?text=Already+Good',

@@ -181,7 +181,7 @@ const PlaceholderDemo = () => {
             <div className="bg-white p-6 rounded-lg shadow-md">
               <h3 className="text-lg font-semibold mb-4 text-red-600">Via Placeholder (Blocked)</h3>
               <ImageWithFallback
-                src="https://via.placeholder.com/300x200"
+                src="https://placehold.co/300x200"
                 alt="Blocked Placeholder"
                 width={250}
                 height={200}
@@ -328,7 +328,7 @@ const PlaceholderDemo = () => {
             <p className="text-gray-600 mb-4">
               These placeholder images are generated locally using SVG and provide reliable fallbacks.
               When external services are needed, we use reliable services like placehold.co instead of
-              problematic ones like via.placeholder.com. This ensures they work even when:
+              problematic ones like placehold.co. This ensures they work even when:
             </p>
             <ul className="list-disc list-inside text-gray-600 mb-4">
               <li>External placeholder services are blocked or unavailable</li>

@@ -93,7 +93,7 @@ export const checkImageBlocking = () => {
   const testUrls = [
     'https://new-yistorik.onrender.com/uploads/test.jpg',
     'https://placehold.co/300x300?text=Test',
-    'https://via.placeholder.com/300x300',
+    'https://placehold.co/300x300',
     'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZjNmNGY2Ii8+PC9zdmc+'
   ];
   

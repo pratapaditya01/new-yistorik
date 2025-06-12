@@ -40,7 +40,7 @@ async function testProductCreation() {
       isActive: true,
       isFeatured: false,
       images: [{
-        url: 'https://via.placeholder.com/400',
+        url: 'https://placehold.co/400',
         alt: 'Test product image',
         isMain: true
       }]
@@ -71,7 +71,7 @@ async function testProductCreation() {
       isActive: true,
       isFeatured: false,
       images: [{
-        url: 'https://via.placeholder.com/300',
+        url: 'https://placehold.co/300',
         alt: 'Short name test image',
         isMain: true
       }]
@@ -102,7 +102,7 @@ async function testProductCreation() {
       isActive: true,
       isFeatured: true,
       images: [{
-        url: 'https://via.placeholder.com/350',
+        url: 'https://placehold.co/350',
         alt: 'Special characters test image',
         isMain: true
       }]

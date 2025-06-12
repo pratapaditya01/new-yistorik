@@ -122,7 +122,7 @@ export const isExternalPlaceholder = (url) => {
   if (!url || typeof url !== 'string') return false;
   
   const externalServices = [
-    'via.placeholder.com',        // Unreliable - blocks frequently
+    'placehold.co',        // Unreliable - blocks frequently
     'picsum.photos',
     'lorempixel.com',
     'dummyimage.com',
