@@ -5,10 +5,14 @@
 
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import StorageDebugger from '../debug/StorageDebugger';
+import RouteAccessibilityChecker from '../debug/RouteAccessibilityChecker';
 
 const DebugPanel = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [errors, setErrors] = useState([]);
+  const [showStorageDebugger, setShowStorageDebugger] = useState(false);
+  const [showRouteChecker, setShowRouteChecker] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -132,21 +136,35 @@ const DebugPanel = () => {
               >
                 Quick Fix
               </button>
-              
+
               <button
                 onClick={runDebugReport}
                 className="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600"
               >
                 Debug Report
               </button>
-              
+
+              <button
+                onClick={() => setShowRouteChecker(true)}
+                className="bg-purple-500 text-white px-2 py-1 rounded hover:bg-purple-600"
+              >
+                Route Check
+              </button>
+
+              <button
+                onClick={() => setShowStorageDebugger(true)}
+                className="bg-indigo-500 text-white px-2 py-1 rounded hover:bg-indigo-600"
+              >
+                Storage Debug
+              </button>
+
               <button
                 onClick={() => navigate('/debug/404')}
                 className="bg-orange-500 text-white px-2 py-1 rounded hover:bg-orange-600"
               >
                 Debug Page
               </button>
-              
+
               <button
                 onClick={clearErrors}
                 className="bg-gray-500 text-white px-2 py-1 rounded hover:bg-gray-600"
@@ -192,6 +210,16 @@ const DebugPanel = () => {
             Environment: {window.location.hostname === 'localhost' ? 'Development' : 'Production'}
           </div>
         </div>
+      )}
+
+      {/* Storage Debugger Modal */}
+      {showStorageDebugger && (
+        <StorageDebugger onClose={() => setShowStorageDebugger(false)} />
+      )}
+
+      {/* Route Accessibility Checker Modal */}
+      {showRouteChecker && (
+        <RouteAccessibilityChecker onClose={() => setShowRouteChecker(false)} />
       )}
     </>
   );
