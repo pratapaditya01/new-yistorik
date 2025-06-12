@@ -22,7 +22,6 @@ import Footer from './components/layout/Footer';
 import Home from './pages/Home';
 import Products from './pages/Products';
 import ProductDetail from './pages/ProductDetail';
-import CategoryPage from './pages/CategoryPage';
 
 // Lazy load less critical pages for better initial load performance
 const Cart = lazy(() => import('./pages/Cart'));
@@ -92,7 +91,6 @@ function App() {
                 <Route path="/" element={<Home />} />
                 <Route path="/products" element={<Products />} />
                 <Route path="/products/:slug" element={<ProductDetail />} />
-                <Route path="/category/:slug" element={<CategoryPage />} />
                 <Route path="/cart" element={<Cart />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
