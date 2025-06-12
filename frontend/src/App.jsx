@@ -49,6 +49,7 @@ import ProtectedRoute from './components/auth/ProtectedRoute';
 import AdminRoute from './components/auth/AdminRoute';
 import { GlobalErrorMonitor } from './components/ui/ErrorBoundary';
 import DebugPanel from './components/ui/DebugPanel';
+import ErrorBoundary from './components/debug/ErrorBoundary';
 
 // Loading fallback component
 const PageLoader = () => (
@@ -79,9 +80,10 @@ function App() {
     <AuthProvider>
       <CartProvider>
         <Router>
-          <RedirectHandler />
-          <GlobalErrorMonitor />
-          <div className="min-h-screen bg-gray-50 flex flex-col">
+          <ErrorBoundary>
+            <RedirectHandler />
+            <GlobalErrorMonitor />
+            <div className="min-h-screen bg-gray-50 flex flex-col">
             <Navbar />
 
             <main className="flex-1">
@@ -192,6 +194,7 @@ function App() {
 
           {/* Debug Panel - Only shows in development or when enabled */}
           <DebugPanel />
+          </ErrorBoundary>
         </Router>
       </CartProvider>
     </AuthProvider>

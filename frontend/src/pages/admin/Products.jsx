@@ -231,7 +231,7 @@ const Products = () => {
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
-                  {filteredProducts.map((product, index) => (
+                  {filteredProducts.filter(product => product && product._id).map((product, index) => (
                     <motion.tr
                       key={product._id}
                       initial={{ opacity: 0, y: 20 }}
@@ -250,17 +250,17 @@ const Products = () => {
                           </div>
                           <div className="ml-4">
                             <div className="text-sm font-medium text-gray-900">
-                              {product.name}
+                              {product.name || 'Unnamed Product'}
                             </div>
                             <div className="text-sm text-gray-500">
-                              {product.slug}
+                              {product.slug || 'no-slug'}
                             </div>
                           </div>
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                          {product.category.name}
+                          {product.category?.name || 'No Category'}
                         </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
@@ -379,7 +379,7 @@ const ProductModal = ({ type, product, categories, onClose, onSave }) => {
         price: product.price || '',
         comparePrice: product.comparePrice || '',
         sku: product.sku || '',
-        category: product.category._id || product.category || '',
+        category: product.category?._id || product.category || '',
         stockQuantity: product.quantity || product.stockQuantity || '',
         inStock: product.isActive !== undefined ? product.isActive : (product.inStock || true),
         featured: product.isFeatured !== undefined ? product.isFeatured : (product.featured || false),
@@ -574,7 +574,7 @@ const ProductModal = ({ type, product, categories, onClose, onSave }) => {
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary-500 focus:border-transparent disabled:bg-gray-100"
               >
                 <option value="">Select Category</option>
-                {categories.map((category) => (
+                {categories.filter(category => category && category._id && category.name).map((category) => (
                   <option key={category._id} value={category._id}>
                     {category.name}
                   </option>
