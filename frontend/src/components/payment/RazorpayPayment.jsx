@@ -87,43 +87,9 @@ const RazorpayPayment = ({
 
   return (
     <div className={`bg-white rounded-lg shadow-md p-6 ${className}`}>
-      {/* Razorpay Payment Header */}
-      <div className="mb-6">
-        <h3 className="text-lg font-semibold text-gray-900 mb-2">
-          🚀 Complete Your Payment
-        </h3>
-        <p className="text-sm text-gray-600">
-          Secure payment powered by Razorpay - supports all major payment methods
-        </p>
-      </div>
 
-      {/* Payment Methods Info */}
-      <div className="bg-gradient-to-r from-blue-50 to-purple-50 border border-blue-200 rounded-lg p-4 mb-6">
-        <div className="flex items-center mb-3">
-          <CreditCardIcon className="w-6 h-6 text-blue-600 mr-2" />
-          <h4 className="text-sm font-medium text-blue-800">
-            Multiple Payment Options Available
-          </h4>
-        </div>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-          <div className="flex items-center text-xs text-blue-700">
-            <span className="w-2 h-2 bg-blue-500 rounded-full mr-2"></span>
-            Credit/Debit Cards
-          </div>
-          <div className="flex items-center text-xs text-green-700">
-            <span className="w-2 h-2 bg-green-500 rounded-full mr-2"></span>
-            UPI (GPay, PhonePe)
-          </div>
-          <div className="flex items-center text-xs text-purple-700">
-            <span className="w-2 h-2 bg-purple-500 rounded-full mr-2"></span>
-            Net Banking
-          </div>
-          <div className="flex items-center text-xs text-orange-700">
-            <span className="w-2 h-2 bg-orange-500 rounded-full mr-2"></span>
-            Digital Wallets
-          </div>
-        </div>
-      </div>
+
+      
 
       {/* Order Summary */}
       <div className="bg-gray-50 rounded-lg p-4 mb-6">
