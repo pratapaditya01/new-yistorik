@@ -423,58 +423,8 @@ const Checkout = () => {
                   </label>
                 </div>
               </div>
-
-              {/* Razorpay Payment Component */}
-              {paymentMethod === 'razorpay' && (
-                <div className="mt-6">
-                  <RazorpayPayment
-                    orderData={(() => {
-                      // Calculate proper GST based on individual products
-                      const subtotal = getTotalPrice();
-                      const shipping = subtotal > 499 ? 0 : 99;
-                      const totalGST = cartItems.reduce((total, item) => {
-                        const gstRate = item.product.gstRate || 0;
-                        const itemTotal = item.price * item.quantity;
-                        const gstAmount = item.product.gstInclusive
-                          ? itemTotal - (itemTotal / (1 + gstRate / 100))
-                          : itemTotal * (gstRate / 100);
-                        return total + gstAmount;
-                      }, 0);
-
-                      const orderData = {
-                        amount: subtotal + shipping + totalGST,
-                        itemsPrice: subtotal,
-                        shippingPrice: shipping,
-                        taxPrice: totalGST,
-                        items: cartItems.map(item => ({
-                          productId: item.product._id,
-                          name: item.product.name,
-                          image: item.product.images?.[0]?.url || '/placeholder.jpg',
-                          price: item.price,
-                          quantity: item.quantity,
-                          selectedVariants: item.selectedVariants || []
-                        })),
-                        shippingAddress: shippingAddress
-                      };
-
-                      // Debug the order data
-                      console.log('💳 CHECKOUT - Razorpay order data:');
-                      console.log('Razorpay order data:', orderData);
-
-                      return orderData;
-                    })()}
-                    onSuccess={() => {
-                      toast.success('Payment successful!');
-                      // Clear cart and navigate will be handled by the component
-                    }}
-                    onError={(error) => {
-                      toast.error(error.message || 'Payment failed');
-                    }}
-                  />
-                </div>
-              )}
-            </div>
-          </div>
+</div></div>
+              
 
           {/* Order Summary */}
           <div className="bg-white rounded-lg shadow p-6 h-fit">
