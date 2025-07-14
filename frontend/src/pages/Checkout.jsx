@@ -396,38 +396,7 @@ const Checkout = () => {
 
 
               <div className="space-y-4">
-                {/* Razorpay Online Payment */}
-                <div className={`border rounded-lg p-4 cursor-pointer transition-colors ${
-                  paymentMethod === 'razorpay'
-                    ? 'border-primary-500 bg-primary-50'
-                    : 'border-gray-200 hover:border-gray-300'
-                }`}>
-                  <label className="flex items-start cursor-pointer">
-                    <input
-                      type="radio"
-                      name="paymentMethod"
-                      value="razorpay"
-                      checked={paymentMethod === 'razorpay'}
-                      onChange={(e) => setPaymentMethod(e.target.value)}
-                      className="mt-1 text-primary-600 focus:ring-primary-500"
-                    />
-                    <div className="ml-3 flex-1">
-                      <div className="font-medium text-gray-900">
-                        💳 Razorpay - Online Payment
-                      </div>
-                      <div className="text-sm text-gray-600 mt-1">
-                        Credit/Debit Cards, UPI, Net Banking, Digital Wallets
-                      </div>
-                      <div className="flex items-center space-x-2 mt-2">
-                        <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">Cards</span>
-                        <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">UPI</span>
-                        <span className="text-xs bg-purple-100 text-purple-800 px-2 py-1 rounded">Net Banking</span>
-                        <span className="text-xs bg-orange-100 text-orange-800 px-2 py-1 rounded">Wallets</span>
-                      </div>
-                    </div>
-                  </label>
-                </div>
-
+             
                 {/* Cash on Delivery */}
                 <div className={`border rounded-lg p-4 cursor-pointer transition-colors ${
                   paymentMethod === 'cash_on_delivery'
