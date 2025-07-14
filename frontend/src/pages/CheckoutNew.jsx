@@ -88,9 +88,7 @@ const CheckoutNew = () => {
         {/* Header with Version */}
         <div className="flex items-center justify-between mb-8">
           <h1 className="text-3xl font-bold text-gray-900">Checkout</h1>
-          <div className="text-xs text-green-600 bg-green-100 px-3 py-1 rounded-full font-medium">
-            ✅ Razorpay Enabled - v3.0
-          </div>
+
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -226,37 +224,8 @@ const CheckoutNew = () => {
               
               {/* Payment Method Selection */}
               <div className="space-y-4 mb-6">
-                {/* Razorpay Option */}
-                <div className={`border-2 rounded-lg p-4 cursor-pointer transition-all ${
-                  paymentMethod === 'razorpay' 
-                    ? 'border-blue-500 bg-blue-50 shadow-md' 
-                    : 'border-gray-200 hover:border-gray-300'
-                }`}>
-                  <label className="flex items-start cursor-pointer">
-                    <input
-                      type="radio"
-                      name="paymentMethod"
-                      value="razorpay"
-                      checked={paymentMethod === 'razorpay'}
-                      onChange={(e) => setPaymentMethod(e.target.value)}
-                      className="mt-1 text-blue-600 focus:ring-blue-500"
-                    />
-                    <div className="ml-3 flex-1">
-                      <div className="font-semibold text-gray-900 text-lg">
-                        🚀 Razorpay - Online Payment
-                      </div>
-                      <div className="text-sm text-gray-600 mt-1">
-                        Pay securely with Cards, UPI, Net Banking, or Digital Wallets
-                      </div>
-                      <div className="flex flex-wrap gap-2 mt-3">
-                        <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full">💳 Cards</span>
-                        <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full">📱 UPI</span>
-                        <span className="text-xs bg-purple-100 text-purple-800 px-2 py-1 rounded-full">🏦 Net Banking</span>
-                        <span className="text-xs bg-orange-100 text-orange-800 px-2 py-1 rounded-full">💰 Wallets</span>
-                      </div>
-                    </div>
-                  </label>
-                </div>
+
+                
 
                 {/* Cash on Delivery Option */}
                 <div className={`border-2 rounded-lg p-4 cursor-pointer transition-all ${
