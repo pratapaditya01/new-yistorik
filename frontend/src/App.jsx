@@ -48,7 +48,6 @@ const Debug404 = lazy(() => import('./pages/Debug404'));
 import ProtectedRoute from './components/auth/ProtectedRoute';
 import AdminRoute from './components/auth/AdminRoute';
 import { GlobalErrorMonitor } from './components/ui/ErrorBoundary';
-import DebugPanel from './components/ui/DebugPanel';
 import ErrorBoundary from './components/debug/ErrorBoundary';
 
 // Loading fallback component
@@ -193,7 +192,7 @@ function App() {
           <Analytics />
 
           {/* Debug Panel - Only shows in development or when enabled */}
-          <DebugPanel />
+          
           </ErrorBoundary>
         </Router>
       </CartProvider>
