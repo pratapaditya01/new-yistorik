@@ -49,21 +49,7 @@ const Footer = () => {
                   All Products
                 </Link>
               </li>
-              <li>
-                <Link to="/products?category=men" className="text-gray-300 hover:text-primary-400 transition-colors text-sm">
-                  Men's Collection
-                </Link>
-              </li>
-              <li>
-                <Link to="/products?category=women" className="text-gray-300 hover:text-primary-400 transition-colors text-sm">
-                  Women's Collection
-                </Link>
-              </li>
-              <li>
-                <Link to="/products?category=accessories" className="text-gray-300 hover:text-primary-400 transition-colors text-sm">
-                  Accessories
-                </Link>
-              </li>
+              
             </ul>
           </div>
 
@@ -72,30 +58,12 @@ const Footer = () => {
             <h4 className="text-lg font-semibold">Customer Service</h4>
             <ul className="space-y-2">
               <li>
-                <a href="#" className="text-gray-300 hover:text-primary-400 transition-colors text-sm">
-                  Contact Us
-                </a>
+<a href="mailto:contactus@yistorik.in" className="text-gray-300 hover:text-primary-400 transition-colors text-sm">
+  Contact Us
+</a>
+
               </li>
-              <li>
-                <a href="#" className="text-gray-300 hover:text-primary-400 transition-colors text-sm">
-                  Shipping Info
-                </a>
-              </li>
-              <li>
-                <a href="#" className="text-gray-300 hover:text-primary-400 transition-colors text-sm">
-                  Returns & Exchanges
-                </a>
-              </li>
-              <li>
-                <a href="#" className="text-gray-300 hover:text-primary-400 transition-colors text-sm">
-                  Size Guide
-                </a>
-              </li>
-              <li>
-                <a href="#" className="text-gray-300 hover:text-primary-400 transition-colors text-sm">
-                  FAQ
-                </a>
-              </li>
+
             </ul>
           </div>
 
