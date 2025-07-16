@@ -67,7 +67,7 @@ const Home = () => {
   playsInline
 >
   <source
-    src="https://res.cloudinary.com/YOUR_CLOUD_NAME/video/upload/q_auto,f_auto/v1625234567/your-video-file.mp4"
+    poster="https://res.cloudinary.com/YOUR_CLOUD_NAME/video/upload/q_auto,f_auto/v1625234567/your-video-file.mp4"
     type="video/mp4"
   />
   Your browser does not support the video tag.
