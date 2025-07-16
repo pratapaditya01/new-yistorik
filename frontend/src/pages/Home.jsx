@@ -59,16 +59,19 @@ const Home = () => {
       {/* Hero Section */}
       <section className="relative bg-gradient-to-r from-primary-600 to-primary-800 text-white overflow-hidden">
   {/* Background video */}
-  <video
-    className="absolute inset-0 w-full h-full object-cover"
-    autoPlay
-    loop
-    muted
-    playsInline
-  >
-    <source src="https://res.cloudinary.com/dvs7ke4d9/video/upload/v1752677709/Sheher_Main_Hun_Main_Tere___1_tfu7pp.mp4" type="video/mp4" />
-    Your browser does not support the video tag.
-  </video>
+<video
+  className="absolute inset-0 w-full h-full object-cover"
+  autoPlay
+  loop
+  muted
+  playsInline
+>
+  <source
+    src="https://res.cloudinary.com/YOUR_CLOUD_NAME/video/upload/q_auto,f_auto/v1625234567/your-video-file.mp4"
+    type="video/mp4"
+  />
+  Your browser does not support the video tag.
+</video>
 
   {/* Dark overlay */}
   <div className="absolute inset-0 bg-black opacity-20"></div>
