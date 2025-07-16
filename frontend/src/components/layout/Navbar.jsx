@@ -57,24 +57,7 @@ const Navbar = () => {
               >
                 Products
               </Link>
-              <Link
-                to="/products?category=men"
-                className="text-gray-700 hover:text-primary-600 px-3 py-2 rounded-md text-sm font-medium transition-colors"
-              >
-                Men
-              </Link>
-              <Link
-                to="/products?category=women"
-                className="text-gray-700 hover:text-primary-600 px-3 py-2 rounded-md text-sm font-medium transition-colors"
-              >
-                Women
-              </Link>
-              <Link
-                to="/products?category=accessories"
-                className="text-gray-700 hover:text-primary-600 px-3 py-2 rounded-md text-sm font-medium transition-colors"
-              >
-                Accessories
-              </Link>
+
             </div>
           </div>
 
