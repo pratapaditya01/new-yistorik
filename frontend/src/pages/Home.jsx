@@ -6,7 +6,7 @@ import LoadingSpinner from '../components/ui/LoadingSpinner';
 import { ArrowRightIcon } from '@heroicons/react/24/outline';
 import { getMainImageUrl } from '../utils/imageUtils';
 import { formatPrice } from '../utils/currency';
-import ImageDebugger from '../components/debug/ImageDebugger';
+
 
 const Home = () => {
   const [featuredProducts, setFeaturedProducts] = useState([]);
@@ -171,9 +171,6 @@ const Home = () => {
       </section>
 
       
-
-      {/* Debug component - remove this after fixing the issue */}
-      <ImageDebugger products={featuredProducts} />
     </div>
   );
 };
