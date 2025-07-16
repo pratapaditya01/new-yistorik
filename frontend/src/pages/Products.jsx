@@ -46,7 +46,7 @@ const Products = () => {
   const [showFilters, setShowFilters] = useState(false);
   const [pagination, setPagination] = useState({
     page: 1,
-    limit: 12,
+    limit: 1000,
     total: 0,
     pages: 0,
   });
