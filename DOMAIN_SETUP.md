@@ -20,7 +20,7 @@ Your application has been configured to use your custom domain `yistorik.in` and
 #### **3. Frontend API Configuration**
 - ✅ Dynamic API URL detection
 - ✅ Development: `http://localhost:5001/api`
-- ✅ Production: `https://new-yistorik.onrender.com/api`
+- ✅ Production: `https://31.97.235.37/api`
 
 #### **4. SEO & Meta Tags**
 - ✅ Updated title: "Yistorik - Premium Fashion Store | www.yistorik.in"
@@ -74,7 +74,7 @@ www.yistorik.in → your-app.vercel.app
 2. **Configure DNS** as instructed by Vercel
 3. **Set environment variables**:
    ```
-   VITE_API_URL=https://new-yistorik.onrender.com/api
+   VITE_API_URL=https://31.97.235.37/api
    ```
 
 ### **Netlify Deployment:**
@@ -100,9 +100,9 @@ After deployment, test these URLs:
 - ✅ `https://www.yistorik.in/login` → Login page
 
 ### **API Endpoints:**
-- ✅ `https://new-yistorik.onrender.com/api/health`
-- ✅ `https://new-yistorik.onrender.com/api/products`
-- ✅ `https://new-yistorik.onrender.com/api/categories`
+- ✅ `https://31.97.235.37/api/health`
+- ✅ `https://31.97.235.37/api/products`
+- ✅ `https://31.97.235.37/api/categories`
 
 ### **CORS Testing:**
 - ✅ Frontend can make API calls to backend

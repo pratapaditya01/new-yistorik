@@ -3,7 +3,7 @@ export const DOMAINS = {
   PRODUCTION: {
     PRIMARY: 'yistorik.in',
     WWW: 'www.yistorik.in',
-    BACKEND: 'https://new-yistorik.onrender.com'
+    BACKEND: 'https://31.97.235.37'
   },
   DEVELOPMENT: {
     FRONTEND: 'localhost:5173',
@@ -11,7 +11,7 @@ export const DOMAINS = {
   },
   STAGING: {
     VERCEL: 'new-yistorik-delta.vercel.app',
-    BACKEND: 'https://new-yistorik.onrender.com'
+    BACKEND: 'https://31.97.235.37'
   }
 };
 

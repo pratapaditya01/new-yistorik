@@ -159,7 +159,7 @@ const Debug404 = () => {
             <p className="text-sm text-gray-600">
               {window.location.hostname === 'localhost' 
                 ? 'http://localhost:5001' 
-                : 'https://new-yistorik.onrender.com'
+                : 'https://31.97.235.37'
               }
             </p>
           </div>
@@ -238,7 +238,7 @@ const Debug404 = () => {
             <div className="text-center">
               <h3 className="text-sm font-medium mb-2">Backend Image</h3>
               <img 
-                src="https://new-yistorik.onrender.com/uploads/sample-product.jpg" 
+                src="https://31.97.235.37/uploads/sample-product.jpg" 
                 alt="Backend Image"
                 className="w-full h-32 object-cover rounded border"
                 onError={(e) => console.error('Image failed:', e.target.src)}

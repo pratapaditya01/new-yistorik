@@ -42,7 +42,7 @@ const CORSImage = ({
 
     try {
       // For backend images, try to load with proper headers
-      if (imageUrl.includes('new-yistorik.onrender.com')) {
+      if (imageUrl.includes('31.97.235.37')) {
         // Create a new image element to test loading
         const testImg = new Image();
         testImg.crossOrigin = 'anonymous'; // Enable CORS
@@ -194,7 +194,7 @@ export const useImagePreloader = (imageUrls) => {
         const img = new Image();
         
         // Try with CORS first for backend images
-        if (url.includes('new-yistorik.onrender.com')) {
+        if (url.includes('31.97.235.37')) {
           img.crossOrigin = 'anonymous';
         }
         

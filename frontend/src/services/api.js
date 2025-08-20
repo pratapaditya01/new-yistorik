@@ -12,11 +12,11 @@ const getApiBaseUrl = () => {
 
   if (currentDomain === 'yistorik.in' || currentDomain === 'www.yistorik.in') {
     // Production domain - use your backend URL
-    return 'https://new-yistorik.onrender.com/api';
+    return 'https://31.97.235.37/api';
   }
 
   // Fallback for Vercel deployments
-  return 'https://new-yistorik.onrender.com/api';
+  return 'https://31.97.235.37/api';
 };
 
 const API_BASE_URL = getApiBaseUrl();

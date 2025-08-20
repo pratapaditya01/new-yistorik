@@ -6,7 +6,7 @@ require('dotenv').config({ path: path.join(__dirname, '..', '.env') });
 console.log('🏥 BACKEND HEALTH CHECK');
 console.log('======================\n');
 
-const BACKEND_URL = process.env.BACKEND_URL || 'https://new-yistorik.onrender.com';
+const BACKEND_URL = process.env.BACKEND_URL || 'https://31.97.235.37';
 const API_BASE = `${BACKEND_URL}/api`;
 
 async function checkBackendHealth() {

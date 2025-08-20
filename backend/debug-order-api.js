@@ -7,7 +7,7 @@ require('dotenv').config();
 async function debugOrderAPI() {
   console.log('🛒 DEBUGGING ORDER API ENDPOINT\n');
   
-  const baseURL = process.env.BACKEND_URL || 'https://new-yistorik.onrender.com';
+  const baseURL = process.env.BACKEND_URL || 'https://31.97.235.37';
   console.log(`🌐 Backend URL: ${baseURL}\n`);
   
   try {

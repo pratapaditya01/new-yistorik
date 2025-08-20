@@ -32,12 +32,12 @@ const getApiBaseUrl = () => {
 
     if (currentDomain === 'yistorik.in' || currentDomain === 'www.yistorik.in') {
       // Production domain - use your backend URL
-      return 'https://new-yistorik.onrender.com';
+      return 'https://31.97.235.37';
     }
   }
 
   // Fallback for SSR or Vercel deployments
-  return 'https://new-yistorik.onrender.com';
+  return 'https://31.97.235.37';
 };
 
 const API_BASE_URL = getApiBaseUrl();

@@ -61,9 +61,9 @@ export const fix404 = {
     if (currentDomain === 'localhost' || currentDomain === '127.0.0.1') {
       apiBaseUrl = 'http://localhost:5001';
     } else if (currentDomain === 'yistorik.in' || currentDomain === 'www.yistorik.in') {
-      apiBaseUrl = 'https://new-yistorik.onrender.com';
+      apiBaseUrl = 'https://31.97.235.37';
     } else {
-      apiBaseUrl = 'https://new-yistorik.onrender.com'; // Default fallback
+      apiBaseUrl = 'https://31.97.235.37'; // Default fallback
     }
     
     // Store in global variable for access
@@ -221,7 +221,7 @@ export const fix404 = {
       const headers = {};
       
       // For backend requests
-      if (url.includes('new-yistorik.onrender.com')) {
+      if (url.includes('31.97.235.37')) {
         headers['Access-Control-Allow-Origin'] = '*';
         headers['Access-Control-Allow-Methods'] = 'GET, POST, PUT, DELETE, OPTIONS';
         headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization';

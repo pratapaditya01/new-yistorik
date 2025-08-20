@@ -14,7 +14,7 @@ const ServiceStatus = () => {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
 
-      const response = await fetch('https://new-yistorik.onrender.com/api/health', {
+      const response = await fetch('https://31.97.235.37/api/health', {
         method: 'GET',
         headers: {
           'Accept': 'application/json',
@@ -154,7 +154,7 @@ export const ServiceStatusIndicator = () => {
   useEffect(() => {
     const checkStatus = async () => {
       try {
-        const response = await fetch('https://new-yistorik.onrender.com/api/health', {
+        const response = await fetch('https://31.97.235.37/api/health', {
           method: 'GET',
           headers: { 'Accept': 'application/json' }
         });
