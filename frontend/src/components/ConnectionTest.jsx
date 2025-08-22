@@ -28,7 +28,7 @@ const ConnectionTest = ({ showDetails = false }) => {
 
     // Test 1: Health check
     try {
-      const healthResponse = await fetch('https://31.97.235.37/api/health', {
+      const healthResponse = await fetch('https://yistorik.in/api/health', {
         method: 'GET',
         headers: {
           'Accept': 'application/json',
@@ -51,7 +51,7 @@ const ConnectionTest = ({ showDetails = false }) => {
 
     // Test 2: CORS test
     try {
-      const corsResponse = await fetch('https://31.97.235.37/api/cors-test', {
+      const corsResponse = await fetch('https://yistorik.in/api/cors-test', {
         method: 'GET',
         headers: {
           'Accept': 'application/json',

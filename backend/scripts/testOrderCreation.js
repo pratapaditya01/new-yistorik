@@ -6,7 +6,7 @@ const axios = require('axios');
 console.log('🛒 TESTING ORDER CREATION WITH PRODUCT IDS');
 console.log('==========================================\n');
 
-const API_BASE = 'https://31.97.235.37/api';
+const API_BASE = 'https://yistorik.in/api';
 
 async function testOrderCreation() {
   try {

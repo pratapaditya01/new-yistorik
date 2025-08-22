@@ -4,7 +4,7 @@ require('dotenv').config();
 async function debugFrontendError() {
   console.log('🔍 DEBUGGING FRONTEND PRODUCT CREATION ERROR\n');
   
-  const baseURL = process.env.BACKEND_URL || 'https://31.97.235.37';
+  const baseURL = process.env.BACKEND_URL || 'https://yistorik.in';
   console.log(`🌐 Backend URL: ${baseURL}\n`);
   
   // 1. Test basic connectivity

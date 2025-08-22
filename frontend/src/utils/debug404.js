@@ -104,7 +104,7 @@ export const debug404 = {
     
     const baseUrls = [
       'http://localhost:5001',
-      'https://31.97.235.37',
+      'https://yistorik.in',
       window.location.origin
     ];
     
@@ -189,7 +189,7 @@ export const debug404 = {
       'https://placehold.co/300x300?text=Test+Image',  // More reliable placeholder service
       'https://placehold.co/300x300',           // Problematic service (should be blocked)
       'https://picsum.photos/300/300',
-      'https://31.97.235.37/uploads/sample-product.jpg',
+      'https://yistorik.in/uploads/sample-product.jpg',
       '/uploads/placeholder.jpg',
       '/placeholder-image.svg'
     ];

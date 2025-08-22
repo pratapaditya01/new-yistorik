@@ -61,9 +61,9 @@ export const fix404 = {
     if (currentDomain === 'localhost' || currentDomain === '127.0.0.1') {
       apiBaseUrl = 'http://localhost:5001';
     } else if (currentDomain === 'yistorik.in' || currentDomain === 'www.yistorik.in') {
-      apiBaseUrl = 'https://31.97.235.37';
+      apiBaseUrl = 'https://yistorik.in';
     } else {
-      apiBaseUrl = 'https://31.97.235.37'; // Default fallback
+      apiBaseUrl = 'https://yistorik.in'; // Default fallback
     }
     
     // Store in global variable for access

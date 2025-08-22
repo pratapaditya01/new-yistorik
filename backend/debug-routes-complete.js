@@ -8,7 +8,7 @@ require('dotenv').config();
 async function debugRoutesComplete() {
   console.log('🛣️ DEBUGGING COMPLETE ROUTE ACCESSIBILITY\n');
   
-  const baseURL = process.env.BACKEND_URL || 'https://31.97.235.37';
+  const baseURL = process.env.BACKEND_URL || 'https://yistorik.in';
   console.log(`🌐 Backend URL: ${baseURL}\n`);
   
   let authToken;

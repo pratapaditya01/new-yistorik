@@ -23,7 +23,7 @@ const ImageFallbackTest = () => {
     'https://placehold.co/300x300/f3f4f6/9ca3af?text=No+Image',        // This should work (reliable)
     'https://picsum.photos/300/300',                                   // This should be blocked
     'https://broken-url.com/image.jpg',                                // This should fail
-    'https://31.97.235.37/uploads/sample-product.jpg',    // This might work
+    'https://yistorik.in/uploads/sample-product.jpg',    // This might work
     '',                                                                // Empty URL
     null,                                                              // Null URL
     'placeholder',                                                     // Invalid URL

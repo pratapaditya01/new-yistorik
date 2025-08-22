@@ -69,8 +69,8 @@ const AccessibilityTest = () => {
   ];
 
   const testImages = [
-    'https://31.97.235.37/uploads/sample1.jpg',
-    'https://31.97.235.37/uploads/sample2.jpg',
+    'https://yistorik.in/uploads/sample1.jpg',
+    'https://yistorik.in/uploads/sample2.jpg',
     'https://placehold.co/300x300/f3f4f6/9ca3af?text=External+Image',
     'https://broken-url.com/image.jpg',
     ''
@@ -238,7 +238,7 @@ const AccessibilityTest = () => {
                 <h3 className="text-lg font-semibold text-gray-800 mb-3">Product Image Component</h3>
                 <div className="flex justify-center space-x-4">
                   <CORSProductImage
-                    src="https://31.97.235.37/uploads/sample1.jpg"
+                    src="https://yistorik.in/uploads/sample1.jpg"
                     alt="Product test"
                     size="lg"
                   />
